@@ -10,10 +10,10 @@ on:
     branches: [ "master" ]
 
 env:
-    SERVER_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }} # 服务器私钥
-    SERVER_HOST: ${{ secrets.SERVER_HOST }} # 服务器IP地址
-    USER_NAME: ${{ secrets.USER_NAME }} # 服务器用户名
-    cache-name: note
+  SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }} # 服务器私钥
+  SERVER_HOST: ${{ secrets.SERVER_HOST }} # 服务器IP地址
+  USER_NAME: ${{ secrets.USER_NAME }} # 服务器用户名
+  cache-name: note
 
 
 jobs:
@@ -36,16 +36,30 @@ jobs:
       run: npm install
       
     - name: Build
-      run: npm build
+      run: npm run build
+      env: 
+        CI: false
+
+    - name: Workspace 
+      run: pwd && ls -a
+
+    - name: Prepare SSH
+      run: >
+          mkdir -p ~/.ssh &&
+          touch ~/.ssh/known_hosts &&
+          ssh-keyscan -H "$IP" >>~/.ssh/known_hosts
+      env:
+        IP: ${{ env.SERVER_HOST }}    
       
     # 上传打包资源
     - name: Deploy
-      uses: easingthemes/ssh-deploy@v2.0.7
+      uses: easingthemes/ssh-deploy@main
       env:
-        SSH_PRIVATE_KEY: ${{ env.SERVER_PRIVATE_KEY }}
-        ARGS: '-avz --delete'
-        SOURCE: 'dist/'
+        SSH_PRIVATE_KEY: ${{ env.SSH_PRIVATE_KEY }}
+        ARGS: '-rltgoDzvO --delete'
+        SOURCE: "build/"
         REMOTE_HOST: ${{ env.SERVER_HOST }}
         REMOTE_USER: ${{ env.USER_NAME }}
-        TARGET: /home/soft/web # 服务器目标路径
+        TARGET: "/home/soft/web/equipment" # 服务器目标路径
+    
 
