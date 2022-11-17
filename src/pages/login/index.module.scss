@@ -1,0 +1,51 @@
+.login {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  /* background: azure; */
+  align-items: center;
+  justify-content: center;
+  background: url("~@/assets/login/login_background.png") no-repeat;
+
+  .loginBox {
+    display: flex;
+    display: -webkit-flex;
+    height: 487px;
+    width: 841px;
+    background: #fff;
+    border-radius: 8px;
+    padding: 40px;
+    align-items: center;
+
+    .boxLeft {
+      flex: 1;
+      height: 90%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      img {
+        width: 351px;
+        height: 285px;
+      }
+    }
+
+    .boxRight {
+      flex: 1;
+      height: 90%;
+
+      .loginTitle {
+        font-size: 28px;
+      }
+
+      .loginBtn {
+        background: #0089FF;
+        border-radius: 30px;
+        width: 268px;
+        height: 49px;
+        font-size: 18px;
+      }
+    }
+  }
+}

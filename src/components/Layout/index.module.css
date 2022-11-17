@@ -1,0 +1,19 @@
+.logo {
+  /* float: left; */
+  width: 120px;
+  height: 32px;
+  /* margin: 16px 0px 0px 0; */
+  /*background: rgba(255, 255, 255, 0.3);*/
+}
+
+
+.siteLayoutBackground {
+  background: #fff;
+}
+
+.content {
+  background: #fff;
+  padding: 24px;
+  margin: 0;
+  min-height: 280px;
+}
