@@ -8,11 +8,14 @@ import ProForm, {
 } from '@ant-design/pro-form'
 import { Form, Modal, Row, Col } from 'antd'
 import Extension from './Extension'
-import { transFormEditTableSelectData, transFormEditTableOptions } from '@/utils/dictUtils'
+import {
+  transFormEditTableSelectData,
+  transFormEditTableOptions,
+} from '@/utils/dictUtils'
 
 const UserForm = (props) => {
   const [form] = Form.useForm()
-  const formRef = useRef();
+  const formRef = useRef()
 
   const [userId, setUserId] = useState('')
   const [inspectionOpt, setInspectionOpt] = useState({})
@@ -24,8 +27,13 @@ const UserForm = (props) => {
   useEffect(() => {
     form.resetFields()
     setUserId(props.values.userId)
+    let userCode =
+      props.values.userCode == '' || props.values.userCode == undefined
+        ? props.values.userId
+        : props.values.userCode // 如果用户没有输入,默认使用ID
     form.setFieldsValue({
       userId: props.values.userId,
+      userCode: userCode,
       deptId: props.values.deptId,
       postIds: props.postIds,
       roleIds: props.roleIds,
@@ -48,7 +56,7 @@ const UserForm = (props) => {
       remark: props.values.remark,
       hireType: extensionData.hireType,
       certificate: extensionData.certificate,
-      dimensions: extensionData.dimensions
+      dimensions: extensionData.dimensions,
     })
   }, [form, props])
 
@@ -80,21 +88,42 @@ const UserForm = (props) => {
       onOk={handleOk}
       onCancel={handleCancel}
     >
-      <ProForm form={form} onFinish={handleFinish} layout='horizontal' submitter={false} formRef={formRef}>
+      <ProForm
+        form={form}
+        onFinish={handleFinish}
+        layout="horizontal"
+        submitter={false}
+        formRef={formRef}
+      >
         <Row gutter={[16, 16]}>
           <Col span={24} order={1}>
             <ProFormDigit
               name="userId"
               label={'用户ID'}
               labelCol={{ span: 2 }}
-
               placeholder="请输入用户ID"
               disabled
-              hidden={!props.values.userId}
+              hidden={true}
               rules={[
                 {
                   required: false,
                   message: '请输入用户ID！',
+                },
+              ]}
+            />
+          </Col>
+        </Row>
+        <Row gutter={[16, 16]}>
+          <Col span={24} order={1}>
+            <ProFormText
+              name="userCode"
+              label={'用户编号'}
+              labelCol={{ span: 2 }}
+              placeholder="请输入用户编号"
+              rules={[
+                {
+                  required: true,
+                  message: '请输入用户编号！',
                 },
               ]}
             />
@@ -139,7 +168,6 @@ const UserForm = (props) => {
               name="phonenumber"
               label={'手机号码'}
               labelCol={{ span: 4 }}
-
               placeholder="请输入手机号码"
               rules={[
                 {
@@ -154,7 +182,6 @@ const UserForm = (props) => {
               name="email"
               label={'用户邮箱'}
               labelCol={{ span: 4 }}
-
               placeholder="请输入用户邮箱"
               rules={[
                 {
@@ -171,7 +198,6 @@ const UserForm = (props) => {
               name="userName"
               label={'用户账号'}
               labelCol={{ span: 4 }}
-
               hidden={userId}
               placeholder="请输入用户账号"
               rules={[
@@ -187,7 +213,6 @@ const UserForm = (props) => {
               name="password"
               label={'密码'}
               labelCol={{ span: 4 }}
-
               hidden={userId}
               placeholder="请输入密码"
               rules={[
@@ -206,7 +231,6 @@ const UserForm = (props) => {
               name="sex"
               label={'用户性别'}
               labelCol={{ span: 4 }}
-
               placeholder="请输入用户性别"
               rules={[
                 {
@@ -222,7 +246,6 @@ const UserForm = (props) => {
               name="status"
               label={'帐号状态'}
               labelCol={{ span: 4 }}
-
               placeholder="请输入帐号状态"
               rules={[
                 {
@@ -238,7 +261,6 @@ const UserForm = (props) => {
             <ProFormSelect
               name="postIds"
               mode="multiple"
-
               label={'岗位'}
               labelCol={{ span: 4 }}
               options={posts}
@@ -250,7 +272,6 @@ const UserForm = (props) => {
             <ProFormSelect
               name="roleIds"
               mode="multiple"
-
               label={'角色'}
               labelCol={{ span: 4 }}
               options={roles}
@@ -263,7 +284,6 @@ const UserForm = (props) => {
           <Col span={24} order={1}>
             <ProFormSelect
               name="hireType"
-
               label={'人员性质'}
               labelCol={{ span: 2 }}
               options={[
@@ -287,7 +307,6 @@ const UserForm = (props) => {
               name="remark"
               label={'备注'}
               labelCol={{ span: 2 }}
-
               placeholder="请输入备注"
               rules={[
                 {
