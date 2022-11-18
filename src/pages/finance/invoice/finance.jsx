@@ -1,7 +1,7 @@
 import { Button, Upload } from 'antd'
 import React, { useState, useEffect } from 'react'
 import { Search, Table, useTable, withTable } from 'table-render'
-import { listOperating } from '@/api/finance/invoice'
+import { listFinance } from '@/api/finance/invoice'
 import { download } from '@/utils/request'
 import UploadForm from './components/upload'
 
@@ -65,7 +65,7 @@ const FinanceTableList = () => {
     }
     // console.log('params >>> ', requestParams)
 
-    return listOperating(requestParams).then((res) => {
+    return listFinance(requestParams).then((res) => {
       const result = {
         rows: res.rows,
         total: res.total,
