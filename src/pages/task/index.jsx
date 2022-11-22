@@ -66,7 +66,7 @@ const TaskTableList = () => {
       title: '操作',
       width: '120px',
       render: (_, record) => {
-        if (record.taskType == 1) {
+        if (record.taskType == 1 && record.status == '0') {
           return [
             <Button
               type="link"
