@@ -4,6 +4,7 @@ import { Form, Modal, Row, Col, message } from 'antd'
 import { formateMonth } from '@/utils/common'
 import { runTask } from '@/api/task'
 import { listJob } from '@/api/monitor/job'
+import { getDicts } from '@/api/system/dict/data'
 
 const ExecuteTask = (props) => {
   const [form] = Form.useForm()
@@ -81,6 +82,17 @@ const ExecuteTask = (props) => {
                 name="params"
                 label={'会计期'}
                 labelCol={{ span: 4 }}
+                request={async () => {
+                  let data = []
+                  const res = await getDicts('invoice_accounting_period')
+                  if (res.code === 200) {
+                    data = res.data.map((item) => ({
+                      label: item.dictLabel,
+                      value: item.dictLabel,
+                    }))
+                  }
+                  return data
+                }}
                 rules={[
                   {
                     required: true,

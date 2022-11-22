@@ -1,7 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { uploadValidate, uploadFlow } from '@/api/finance/bankflow'
+import { listAccount } from '@/api/finance/bankaccount'
 import { UploadOutlined } from '@ant-design/icons'
-import ProForm, { ProFormText, ProFormDatePicker } from '@ant-design/pro-form'
+import ProForm, {
+  ProFormText,
+  ProFormDatePicker,
+  ProFormSelect,
+} from '@ant-design/pro-form'
 import {
   Form,
   Modal,
@@ -126,15 +131,26 @@ const UploadForm = (props) => {
         >
           <Row gutter={[16, 16]}>
             <Col span={24}>
-              <ProFormText
+              <ProFormSelect
                 name="account"
                 label={'本方账号'}
                 labelCol={{ span: 4 }}
                 width="md"
+                request={async () => {
+                  let data = []
+                  const res = await listAccount()
+                  if (res.code === 200) {
+                    data = res.rows.map((item) => ({
+                      label: item.aliasName + '/' + item.account,
+                      value: item.account,
+                    }))
+                  }
+                  return data
+                }}
                 rules={[
                   {
                     required: true,
-                    message: '请输入本方账号！',
+                    message: '请选择本方账号！',
                   },
                 ]}
               />

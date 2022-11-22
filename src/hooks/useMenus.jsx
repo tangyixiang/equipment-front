@@ -2,6 +2,7 @@ import React from 'react'
 import { useNavigate, Route } from 'react-router-dom'
 import { createIcon } from '@/utils/IconUtils'
 import RequireAuth from '@/components/Auth/RequireAuth'
+import { nanoid } from 'nanoid'
 
 const lazyLoad = (path) => {
   const Module = React.lazy(() => import(`@/pages/${path}`))
@@ -14,7 +15,7 @@ const useMenus = () => {
   const buildMenus = (childrens, isDir) => {
     return childrens.map((item) => {
       return {
-        key: item.path,
+        key: item.path.match(':') ? item.path + nanoid() : item.path,
         path: item.path,
         label: item.meta.title,
         icon: createIcon(item.meta.icon),
@@ -43,23 +44,28 @@ const useMenus = () => {
 
   const buildRouters = (menus) => {
     let RouteList = []
+    // 去重路由
+    let unrepeatData = new Set()
     menus.map((route) => {
       if (route.children && route.children.length > 0) {
-        route.children.map((cr) =>
-          RouteList.push(
-            <Route
-              path={cr.path}
-              element={
-                <RequireAuth>
-                  <React.Suspense fallback={<></>}>
-                    {lazyLoad(cr.component)}
-                  </React.Suspense>
-                </RequireAuth>
-              }
-              key={cr.path}
-            />
-          )
-        )
+        route.children.forEach((cr) => {
+          if (!unrepeatData.has(cr.path)) {
+            RouteList.push(
+              <Route
+                path={cr.path}
+                element={
+                  <RequireAuth>
+                    <React.Suspense fallback={<></>}>
+                      {lazyLoad(cr.component)}
+                    </React.Suspense>
+                  </RequireAuth>
+                }
+                key={cr.path}
+              />
+            )
+            unrepeatData.add(cr.path)
+          }
+        })
       }
       // else if (route.component) {
       //   RouteList.push(
