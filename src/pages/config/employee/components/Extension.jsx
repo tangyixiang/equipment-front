@@ -2,14 +2,13 @@ import React, { useState, useEffect } from 'react'
 import { Row, Col, Select } from 'antd'
 import { EditableProTable } from '@ant-design/pro-table'
 import { nanoid } from 'nanoid'
-import {
-  transFormEditTableSelectData,
-} from '@/utils/dictUtils'
+import { transFormEditTableSelectData } from '@/utils/dictUtils'
 import { getDicts } from '@/api/system/dict/data'
 
 function Extension(props) {
   const [editableKeys, setEditableRowKeys] = useState([])
   const [chooseDimension, setChooseDimension] = useState('')
+  const [dataSource, setDataSource] = useState([])
 
   // 值的下拉选项
   const [dimensionValueOpt, setDimensionValueOpt] = useState({})
@@ -29,7 +28,6 @@ function Extension(props) {
       title: '生效时间',
       dataIndex: 'startDate',
       valueType: 'date',
-
     },
     {
       title: '失效时间',
@@ -42,12 +40,13 @@ function Extension(props) {
     },
     {
       title: '操作',
+      valueType: 'option',
       width: 200,
       render: (text, record, _, action) => [
         <a
           key="editable"
           onClick={() => {
-            action?.startEditable?.(record.id);
+            action?.startEditable?.(record.id)
           }}
         >
           编辑
@@ -55,10 +54,13 @@ function Extension(props) {
         <a
           key="delete"
           onClick={() => {
-            const tableDataSource = props.formRef.current?.getFieldValue('certificate');
+            const tableDataSource =
+              props.formRef.current?.getFieldValue('certificate')
             props.formRef.current?.setFieldsValue({
-              certificate: tableDataSource.filter((item) => item.id !== record.id),
-            });
+              certificate: tableDataSource.filter(
+                (item) => item.id !== record.id
+              ),
+            })
           }}
         >
           删除
@@ -77,7 +79,8 @@ function Extension(props) {
           <Select
             onChange={(value) => {
               transFormEditTableSelectData(value, setDimensionValueOpt)
-              const tableDataSource = props.formRef.current?.getFieldValue('dimensions')
+              const tableDataSource =
+                props.formRef.current?.getFieldValue('dimensions')
               tableDataSource.forEach((item) => {
                 if (item.id == row.recordKey) {
                   item.dimensionValue = undefined
@@ -117,11 +120,12 @@ function Extension(props) {
     {
       title: '操作',
       width: 200,
+      valueType: 'option',
       render: (text, record, _, action) => [
         <a
           key="editable"
           onClick={() => {
-            action?.startEditable?.(record.id);
+            action?.startEditable?.(record.id)
           }}
         >
           编辑
@@ -129,10 +133,13 @@ function Extension(props) {
         <a
           key="delete"
           onClick={() => {
-            const tableDataSource = props.formRef.current?.getFieldValue('dimensions');
+            const tableDataSource =
+              props.formRef.current?.getFieldValue('dimensions')
             props.formRef.current?.setFieldsValue({
-              dimensions: tableDataSource.filter((item) => item.id !== record.id),
-            });
+              dimensions: tableDataSource.filter(
+                (item) => item.id !== record.id
+              ),
+            })
           }}
         >
           删除

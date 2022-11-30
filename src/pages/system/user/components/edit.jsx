@@ -7,33 +7,26 @@ import ProForm, {
   ProFormTreeSelect,
 } from '@ant-design/pro-form'
 import { Form, Modal, Row, Col } from 'antd'
-import Extension from './Extension'
-import {
-  transFormEditTableSelectData,
-  transFormEditTableOptions,
-} from '@/utils/dictUtils'
 
 const UserForm = (props) => {
   const [form] = Form.useForm()
   const formRef = useRef()
 
   const [userId, setUserId] = useState('')
-  const [inspectionOpt, setInspectionOpt] = useState({})
-  const [dimensionKeyOpt, setDimensionKeyOpt] = useState({})
 
   const { sexOptions, statusOptions } = props
-  const { roles, posts, depts, extensionData } = props
+  const { roles, posts, depts } = props
 
   useEffect(() => {
     form.resetFields()
     setUserId(props.values.userId)
-    let userCode =
-      props.values.userCode == '' || props.values.userCode == undefined
-        ? props.values.userId
-        : props.values.userCode // 如果用户没有输入,默认使用ID
+    // let userCode =
+    //   props.values.userCode == '' || props.values.userCode == undefined
+    //     ? props.values.userId
+    //     : props.values.userCode // 如果用户没有输入,默认使用ID
     form.setFieldsValue({
       userId: props.values.userId,
-      userCode: userCode,
+      // userCode: userCode,
       deptId: props.values.deptId,
       postIds: props.postIds,
       roleIds: props.roleIds,
@@ -54,16 +47,8 @@ const UserForm = (props) => {
       updateBy: props.values.updateBy,
       updateTime: props.values.updateTime,
       remark: props.values.remark,
-      hireType: extensionData.hireType,
-      certificate: extensionData.certificate,
-      dimensions: extensionData.dimensions,
     })
   }, [form, props])
-
-  useEffect(() => {
-    transFormEditTableSelectData('inspection_dict', setInspectionOpt)
-    transFormEditTableOptions('user_extension_dict_type', setDimensionKeyOpt)
-  }, [])
 
   const handleOk = () => {
     form.submit()
@@ -81,7 +66,7 @@ const UserForm = (props) => {
   return (
     <Modal
       forceRender
-      width={'70%'}
+      width={'60%'}
       title={'编辑用户信息'}
       open={props.visible}
       destroyOnClose
@@ -113,7 +98,7 @@ const UserForm = (props) => {
             />
           </Col>
         </Row>
-        <Row gutter={[16, 16]}>
+        {/* <Row gutter={[16, 16]}>
           <Col span={24} order={1}>
             <ProFormText
               name="userCode"
@@ -128,7 +113,7 @@ const UserForm = (props) => {
               ]}
             />
           </Col>
-        </Row>
+        </Row> */}
         <Row gutter={[16, 16]}>
           <Col span={12} order={1}>
             <ProFormText
@@ -198,7 +183,6 @@ const UserForm = (props) => {
               name="userName"
               label={'用户账号'}
               labelCol={{ span: 4 }}
-              hidden={userId}
               placeholder="请输入用户账号"
               rules={[
                 {
@@ -213,7 +197,6 @@ const UserForm = (props) => {
               name="password"
               label={'密码'}
               labelCol={{ span: 4 }}
-              hidden={userId}
               placeholder="请输入密码"
               rules={[
                 {
@@ -282,27 +265,6 @@ const UserForm = (props) => {
         </Row>
         <Row gutter={[16, 16]}>
           <Col span={24} order={1}>
-            <ProFormSelect
-              name="hireType"
-              label={'人员性质'}
-              labelCol={{ span: 2 }}
-              options={[
-                {
-                  value: '1',
-                  label: '在编',
-                },
-                {
-                  value: '2',
-                  label: '聘用',
-                },
-              ]}
-              placeholder="请选择人员性质"
-              rules={[{ required: true, message: '请选择人员性质!' }]}
-            />
-          </Col>
-        </Row>
-        <Row gutter={[16, 16]}>
-          <Col span={24} order={1}>
             <ProFormTextArea
               name="remark"
               label={'备注'}
@@ -317,11 +279,6 @@ const UserForm = (props) => {
             />
           </Col>
         </Row>
-        <Extension
-          inspectionOpt={inspectionOpt}
-          dimensionKeyOpt={dimensionKeyOpt}
-          formRef={formRef}
-        />
       </ProForm>
     </Modal>
   )

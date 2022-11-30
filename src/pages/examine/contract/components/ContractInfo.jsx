@@ -168,6 +168,7 @@ function ContractInfo(props) {
     {
       title: '操作',
       width: 200,
+      valueType: 'option',
       render: (text, record, _, action) => [
         <a
           key="editable"
@@ -226,6 +227,7 @@ function ContractInfo(props) {
     {
       title: '操作',
       width: 200,
+      valueType: 'option',
       render: (text, record, _, action) => [
         <a
           key="editable"

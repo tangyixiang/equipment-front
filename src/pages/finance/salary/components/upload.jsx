@@ -63,13 +63,9 @@ const UploadForm = (props) => {
   const handleFinish = (values) => {
     let period = formateMonth(values.period)
     uploadSalary(period, fileList).then((res) => {
-      if (res.code == 200) {
-        message.success('导入成功')
-        handleCancel()
-        props.refresh()
-      } else {
-        message.error(res.msg)
-      }
+      message.success('导入成功')
+      handleCancel()
+      props.refresh()
     })
   }
 

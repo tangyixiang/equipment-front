@@ -35,14 +35,10 @@ const UploadForm = (props) => {
 
   const handleFinish = async (values) => {
     let period = formateMonth(values.period)
-    uploadInvoice(props.path + '?period=' + period, fileList).then((res) => {
-      if (res.code == 200) {
-        message.success('导入成功')
-        handleCancel()
-        props.refresh()
-      } else {
-        message.error(res.msg)
-      }
+    uploadInvoice(props.path + '?period=' + period, fileList).then(() => {
+      message.success('导入成功')
+      handleCancel()
+      props.refresh()
     })
   }
 

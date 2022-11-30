@@ -46,13 +46,9 @@ const UploadForm = (props) => {
       return false
     }
     uploadFlow(account, startDate, endDate, fileList).then((res) => {
-      if (res.code == 200) {
-        message.success('导入成功')
-        handleCancel()
-        props.refresh()
-      } else {
-        message.error(res.msg)
-      }
+      message.success('导入成功')
+      handleCancel()
+      props.refresh()
     })
   }
 
@@ -89,10 +85,9 @@ const UploadForm = (props) => {
       const startDate = formateDate(form.getFieldValue('startDate'))
       const endDate = formateDate(form.getFieldValue('endDate'))
       uploadValidate(account, startDate, endDate, file).then((res) => {
-        if (res.code == 200 && res.data.validate) {
+        if (res.data.validate) {
           return resolve()
-        }
-        if (res.code == 200 && !res.data.validate) {
+        } else {
           Modal.confirm({
             title: '导入确认',
             content:
@@ -104,8 +99,6 @@ const UploadForm = (props) => {
               reject()
             },
           })
-        } else {
-          return reject()
         }
       })
     })

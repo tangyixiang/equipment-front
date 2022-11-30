@@ -23,13 +23,10 @@ const ExecuteTask = (props) => {
   }
 
   const handleFinish = async (values) => {
-    runTask(values).then((res) => {
-      if (res.code == 200) {
-        message.success('运行成功,请稍后查看运行结果')
-        handleCancel()
-      }
+    runTask(values).then(() => {
+      message.success('运行成功,请稍后查看运行结果')
+      handleCancel()
     })
-    return true
   }
 
   return (

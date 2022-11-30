@@ -41,6 +41,7 @@ const FinanceInfo = (props) => {
     {
       title: '操作',
       width: 200,
+      valueType: 'option',
       render: (text, record, _, action) => [
         <a
           key="editable"
@@ -76,12 +77,9 @@ const FinanceInfo = (props) => {
   }
   const handleFinish = async (values) => {
     // console.log('最后提交数据', values);
-    updateClient(values).then((res) => {
-      if (res.code == 200) {
-        props.onCancel()
-      }
+    updateClient(values).then(() => {
+      props.onCancel()
     })
-    return true
   }
 
   return (

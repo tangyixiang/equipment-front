@@ -15,6 +15,7 @@ export function addAccount(data) {
     data: data,
   })
 }
+
 export function updateAccount(data) {
   return request({
     url: '/bank/account/update',

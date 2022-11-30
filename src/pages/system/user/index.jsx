@@ -99,8 +99,6 @@ function User() {
   const [roleIds, setRoleIds] = useState()
   const [roleList, setRoleList] = useState()
   const [deptTree, setDeptTree] = useState()
-  const [extensionData, setExtensionData] = useState()
-
 
   useEffect(() => {
     getDicts('sys_user_sex').then((res) => {
@@ -174,9 +172,8 @@ function User() {
           onClick={() => {
             const fetchUserInfo = async (userId) => {
               const res = await getUser(userId)
-              const { hireType, certificate, dimensions, postIds, roleIds } = res
+              const { postIds, roleIds } = res
               setPostIds(postIds)
-              setExtensionData({ hireType, certificate, dimensions })
               setPostList(
                 res.posts.map((item) => {
                   return {
@@ -275,12 +272,10 @@ function User() {
     // console.log('params >>> ', requestParams)
     return listUser(requestParams)
       .then((res) => {
-        if (res.code == 200) {
-          return {
-            rows: res.rows,
-            total: res.total,
-            extraData: res.code,
-          }
+        return {
+          rows: res.rows,
+          total: res.total,
+          extraData: res.code,
         }
       })
       .catch((e) => {
@@ -317,6 +312,7 @@ function User() {
               showSizeChanger: true,
               showTotal: (total) => `总共 ${total} 条`,
             }}
+            toolbarAction
             toolbarRender={() => [
               <Button
                 key="primary"
@@ -325,7 +321,6 @@ function User() {
                   if (selectDept.id === '' || selectDept.id == null) {
                     message.warning('请选择左侧父级节点')
                   } else {
-                    setExtensionData([])
                     getDeptTreeList({}).then((treeData) => {
                       setDeptTree(treeData)
                       setCurrentRow(undefined)
@@ -375,9 +370,7 @@ function User() {
           if (success) {
             setModalVisible(false)
             setCurrentRow(undefined)
-            if (actionRef.current) {
-              actionRef.current.reload()
-            }
+            refresh()
           }
         }}
         onCancel={() => {
@@ -393,7 +386,6 @@ function User() {
         roles={roleList || []}
         roleIds={roleIds || []}
         depts={deptTree || []}
-        extensionData={extensionData || {}}
       />
     </>
   )
