@@ -95,6 +95,7 @@ function TableList(props) {
   columns.push({
     title: '操作',
     width: '220px',
+    hideInSearch: true,
     render: (_, record) => [
       <Button
         type="link"
