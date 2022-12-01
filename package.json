@@ -2,7 +2,7 @@
   "name": "equipment-front",
   "version": "0.1.0",
   "private": true,
-  "homepage": ".",
+  "homepage": "/equipment/",
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
     "@ant-design/pro-form": "^2.2.2",
