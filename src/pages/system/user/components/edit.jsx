@@ -98,22 +98,6 @@ const UserForm = (props) => {
             />
           </Col>
         </Row>
-        {/* <Row gutter={[16, 16]}>
-          <Col span={24} order={1}>
-            <ProFormText
-              name="userCode"
-              label={'用户编号'}
-              labelCol={{ span: 2 }}
-              placeholder="请输入用户编号"
-              rules={[
-                {
-                  required: true,
-                  message: '请输入用户编号！',
-                },
-              ]}
-            />
-          </Col>
-        </Row> */}
         <Row gutter={[16, 16]}>
           <Col span={12} order={1}>
             <ProFormText
@@ -153,6 +137,7 @@ const UserForm = (props) => {
               name="phonenumber"
               label={'手机号码'}
               labelCol={{ span: 4 }}
+              hidden={true}
               placeholder="请输入手机号码"
               rules={[
                 {
@@ -167,6 +152,7 @@ const UserForm = (props) => {
               name="email"
               label={'用户邮箱'}
               labelCol={{ span: 4 }}
+              hidden={true}
               placeholder="请输入用户邮箱"
               rules={[
                 {
@@ -193,7 +179,7 @@ const UserForm = (props) => {
             />
           </Col>
           <Col span={12} order={2}>
-            <ProFormText
+            <ProFormText.Password
               name="password"
               label={'密码'}
               labelCol={{ span: 4 }}
@@ -232,7 +218,7 @@ const UserForm = (props) => {
               placeholder="请输入帐号状态"
               rules={[
                 {
-                  required: false,
+                  required: true,
                   message: '请输入帐号状态！',
                 },
               ]}
@@ -246,9 +232,10 @@ const UserForm = (props) => {
               mode="multiple"
               label={'岗位'}
               labelCol={{ span: 4 }}
+              hidden={true}
               options={posts}
               placeholder="请选择岗位"
-              rules={[{ required: true, message: '请选择岗位!' }]}
+              rules={[{ required: false, message: '请选择岗位!' }]}
             />
           </Col>
           <Col span={12} order={2}>
@@ -257,9 +244,10 @@ const UserForm = (props) => {
               mode="multiple"
               label={'角色'}
               labelCol={{ span: 4 }}
+              hidden={true}
               options={roles}
               placeholder="请选择角色"
-              rules={[{ required: true, message: '请选择角色!' }]}
+              rules={[{ required: false, message: '请选择角色!' }]}
             />
           </Col>
         </Row>
