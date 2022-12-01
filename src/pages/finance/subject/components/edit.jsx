@@ -45,13 +45,14 @@ const SubjectInfo = (props) => {
 
   useEffect(() => {
     form.resetFields()
-    form.setFieldsValue({
-      id: props.record?.id,
-      categoryId: props.record?.categoryId,
-      mappingId: props.record?.mappingId,
-      itemId: props.record?.itemId,
-      value: props.record?.value,
-    })
+    // form.setFieldsValue({
+    //   id: props.record?.id,
+    //   categoryId: props.record?.categoryId,
+    //   mappingId: props.record?.mappingId,
+    //   itemId: props.record?.itemId,
+    //   value: props.record?.value,
+    // })
+    form.setFieldsValue(props.record)
   }, [form, props])
 
   const handleOk = () => {
@@ -62,6 +63,8 @@ const SubjectInfo = (props) => {
     form.resetFields()
   }
   const handleFinish = async (values) => {
+    console.log(values)
+    console.log(props.record?.id)
     if (values.id) {
       handleUpdate(values)
     } else {
