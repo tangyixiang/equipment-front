@@ -226,7 +226,7 @@ const UserForm = (props) => {
           </Col>
         </Row>
         <Row gutter={[16, 16]}>
-          <Col span={12} order={1}>
+          <Col span={12} order={2}>
             <ProFormSelect
               name="postIds"
               mode="multiple"
@@ -238,13 +238,12 @@ const UserForm = (props) => {
               rules={[{ required: false, message: '请选择岗位!' }]}
             />
           </Col>
-          <Col span={12} order={2}>
+          <Col span={12} order={1}>
             <ProFormSelect
               name="roleIds"
               mode="multiple"
               label={'角色'}
               labelCol={{ span: 4 }}
-              hidden={true}
               options={roles}
               placeholder="请选择角色"
               rules={[{ required: false, message: '请选择角色!' }]}

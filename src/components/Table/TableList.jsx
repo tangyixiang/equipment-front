@@ -1,10 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState, useLayoutEffect } from 'react'
 import { Button, message, Modal } from 'antd'
 import ProTable from '@ant-design/pro-table'
 import TableModal from './TableModal'
 
 function TableList(props) {
-  const { func, rowKey, columns, labelWidth, modal } = props
+  const { func, rowKey, columns, labelWidth } = props
 
   /**
    * 关闭Modal
@@ -81,18 +81,18 @@ function TableList(props) {
     }
   }
 
-  const [modalVisible, setModalVisible] = useState(false)
   const actionRef = useRef()
+  const [modalVisible, setModalVisible] = useState(false)
   const [currentRow, setCurrentRow] = useState()
   const [selectedRowsState, setSelectedRows] = useState([])
+  // const [renderColumn, setRenderColumn] = useState(columns)
 
   // 执行初始化方法
   useEffect(() => {
     props.initData && func.init()
   }, [])
 
-  // 每一行添加操作选项
-  columns.push({
+  const editOptions = {
     title: '操作',
     width: '220px',
     hideInSearch: true,
@@ -133,7 +133,13 @@ function TableList(props) {
         删除
       </Button>,
     ],
-  })
+  }
+
+  // 每一行添加操作选项
+  const result = columns.some((element) => element.title == '操作')
+  if (!result) {
+    columns.push(editOptions)
+  }
 
   return (
     <>
@@ -141,6 +147,7 @@ function TableList(props) {
         actionRef={actionRef}
         rowKey={rowKey}
         key="TableList"
+        // columns={renderColumn}
         columns={columns}
         search={{
           labelWidth: labelWidth,
@@ -192,7 +199,7 @@ function TableList(props) {
         <TableModal
           onSubmit={async (values) => {
             let success = false
-            if (currentRow[rowKey]) {
+            if (currentRow && currentRow[rowKey]) {
               values[rowKey] = currentRow[rowKey]
               console.log(values)
               success = await handleUpdate(values)
