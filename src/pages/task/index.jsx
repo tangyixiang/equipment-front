@@ -74,7 +74,7 @@ const TaskTableList = () => {
               key="download"
               onClick={() => {
                 download(
-                  '/task/split/result?jobLogId=' + record.taskId,
+                  '/task/split/result?jobLogId=' + record.jobLogId,
                   {},
                   '发票分录结果.xlsx'
                 )
