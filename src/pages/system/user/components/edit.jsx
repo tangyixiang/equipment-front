@@ -194,22 +194,8 @@ const UserForm = (props) => {
           </Col>
         </Row>
         <Row gutter={[16, 16]}>
+          
           <Col span={12} order={1}>
-            <ProFormSelect
-              valueEnum={sexOptions}
-              name="sex"
-              label={'用户性别'}
-              labelCol={{ span: 4 }}
-              placeholder="请输入用户性别"
-              rules={[
-                {
-                  required: false,
-                  message: '请输入用户性别！',
-                },
-              ]}
-            />
-          </Col>
-          <Col span={12} order={2}>
             <ProFormSelect
               valueEnum={statusOptions}
               name="status"
@@ -224,8 +210,34 @@ const UserForm = (props) => {
               ]}
             />
           </Col>
+          <Col span={12} order={2}>
+            <ProFormSelect
+              name="roleIds"
+              mode="multiple"
+              label={'角色'}
+              labelCol={{ span: 4 }}
+              options={roles}
+              placeholder="请选择角色"
+              rules={[{ required: false, message: '请选择角色!' }]}
+            />
+          </Col>
         </Row>
         <Row gutter={[16, 16]}>
+          {/* <Col span={12} order={1}>
+            <ProFormSelect
+              valueEnum={sexOptions}
+              name="sex"
+              label={'用户性别'}
+              labelCol={{ span: 4 }}
+              placeholder="请输入用户性别"
+              rules={[
+                {
+                  required: false,
+                  message: '请输入用户性别！',
+                },
+              ]}
+            />
+          </Col> */}
           <Col span={12} order={2}>
             <ProFormSelect
               name="postIds"
@@ -236,17 +248,6 @@ const UserForm = (props) => {
               options={posts}
               placeholder="请选择岗位"
               rules={[{ required: false, message: '请选择岗位!' }]}
-            />
-          </Col>
-          <Col span={12} order={1}>
-            <ProFormSelect
-              name="roleIds"
-              mode="multiple"
-              label={'角色'}
-              labelCol={{ span: 4 }}
-              options={roles}
-              placeholder="请选择角色"
-              rules={[{ required: false, message: '请选择角色!' }]}
             />
           </Col>
         </Row>
