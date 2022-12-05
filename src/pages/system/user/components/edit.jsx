@@ -99,11 +99,11 @@ const UserForm = (props) => {
           </Col>
         </Row>
         <Row gutter={[16, 16]}>
-          <Col span={12} order={1}>
+          <Col span={24} order={1}>
             <ProFormText
               name="nickName"
               label={'用户昵称'}
-              labelCol={{ span: 4 }}
+              labelCol={{ span: 2 }}
               placeholder="请输入用户昵称"
               rules={[
                 {
@@ -113,7 +113,7 @@ const UserForm = (props) => {
               ]}
             />
           </Col>
-          <Col span={12} order={2}>
+          {/* <Col span={12} order={2}>
             <ProFormTreeSelect
               name="deptId"
               label={'部门'}
@@ -129,7 +129,7 @@ const UserForm = (props) => {
                 },
               ]}
             />
-          </Col>
+          </Col> */}
         </Row>
         <Row gutter={[16, 16]}>
           <Col span={12} order={1}>

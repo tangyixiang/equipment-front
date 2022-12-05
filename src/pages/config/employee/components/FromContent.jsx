@@ -12,14 +12,23 @@ import {
 } from '@/utils/dictUtils'
 import { listPost } from '@/api/system/post'
 import { getDeptTreeList } from '@/api/system/dept'
+import { getDicts } from '@/api/system/dict/data'
 
 function FromContent(props) {
   const [inspectionOpt, setInspectionOpt] = useState({})
   const [dimensionKeyOpt, setDimensionKeyOpt] = useState({})
+  const [sexOptions, setSexOptions] = useState([])
 
   useEffect(() => {
     transFormEditTableSelectData('inspection_dict', setInspectionOpt)
     transFormEditTableOptions('user_extension_dict_type', setDimensionKeyOpt)
+    getDicts('sys_user_sex').then((res) => {
+      const opts = {}
+      res.data.forEach((item) => {
+        opts[item.dictValue] = item.dictLabel
+      })
+      setSexOptions(opts)
+    })
   }, [])
 
   return (
@@ -142,6 +151,54 @@ function FromContent(props) {
             ]}
             placeholder="请选择职员状态"
             rules={[{ required: true, message: '请选择职员状态!' }]}
+          />
+        </Col>
+      </Row>
+      <Row gutter={[16, 16]}>
+        <Col span={12} order={1}>
+          <ProFormText
+            name="phone"
+            label={'手机号码'}
+            labelCol={{ span: 4 }}
+            placeholder="请输入手机号码"
+            rules={[
+              {
+                required: false,
+                message: '请输入手机号码！',
+              },
+            ]}
+          />
+        </Col>
+        <Col span={12} order={2}>
+          <ProFormText
+            name="email"
+            label={'用户邮箱'}
+            labelCol={{ span: 4 }}
+            placeholder="请输入用户邮箱"
+            rules={[
+              {
+                required: false,
+                message: '请输入用户邮箱！',
+              },
+            ]}
+          />
+        </Col>
+      </Row>
+      <Row gutter={[16, 16]}>
+        <Col span={12} order={1}>
+          <ProFormSelect
+            valueEnum={sexOptions}
+            name="sex"
+            initialValue={'0'}
+            label={'用户性别'}
+            labelCol={{ span: 4 }}
+            placeholder="请输入用户性别"
+            rules={[
+              {
+                required: true,
+                message: '请输入用户性别！',
+              },
+            ]}
           />
         </Col>
       </Row>

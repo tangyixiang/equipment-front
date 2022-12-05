@@ -25,6 +25,11 @@ const schema = {
       width: '25%',
     },
     userName: {
+      title: '用户账号',
+      type: 'string',
+      width: '25%',
+    },
+    nickName: {
       title: '用户名称',
       type: 'string',
       width: '25%',
