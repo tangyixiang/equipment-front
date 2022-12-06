@@ -80,6 +80,12 @@ function SubjectTableList() {
     list: listSubject,
   }
 
+  const optionBtn = {
+    view: false,
+    edit: true,
+    del: true,
+  }
+
   const modalContent = {
     title: '科目信息',
     width: '40%',
@@ -101,6 +107,7 @@ function SubjectTableList() {
         columns={columns}
         initData={false}
         func={crud}
+        optionBtn={optionBtn}
         labelWidth={100}
         contianModal={true}
         modalContent={modalContent}

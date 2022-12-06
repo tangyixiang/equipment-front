@@ -4,7 +4,7 @@ import ProTable from '@ant-design/pro-table'
 import TableModal from './TableModal'
 
 function TableList(props) {
-  const { func, rowKey, columns, labelWidth } = props
+  const { func, optionBtn, rowKey, columns, labelWidth } = props
 
   /**
    * 关闭Modal
@@ -82,6 +82,7 @@ function TableList(props) {
   }
 
   const actionRef = useRef()
+  const [readOnly, setReadOnly] = useState(false)
   const [modalVisible, setModalVisible] = useState(false)
   const [currentRow, setCurrentRow] = useState()
   const [selectedRowsState, setSelectedRows] = useState([])
@@ -92,53 +93,91 @@ function TableList(props) {
     props.initData && func.init()
   }, [])
 
-  const editOptions = {
+  const viewOption = (record) => {
+    return (
+      optionBtn.view && (
+        <Button
+          type="link"
+          size="small"
+          key="view"
+          // hidden={!access.hasPerms('system:user:edit')}
+          onClick={() => {
+            setCurrentRow(record)
+            setReadOnly(true)
+            setModalVisible(true)
+          }}
+        >
+          查看
+        </Button>
+      )
+    )
+  }
+
+  const editOption = (record) => {
+    return (
+      optionBtn.edit && (
+        <Button
+          type="link"
+          size="small"
+          key="edit"
+          // hidden={!access.hasPerms('system:user:edit')}
+          onClick={() => {
+            setCurrentRow(record)
+            setReadOnly(false)
+            setModalVisible(true)
+          }}
+        >
+          编辑
+        </Button>
+      )
+    )
+  }
+
+  const delOption = (record) => {
+    return (
+      optionBtn.del && (
+        <Button
+          type="link"
+          size="small"
+          danger
+          key="remove"
+          // hidden={!access.hasPerms('system:user:remove')}
+          onClick={async () => {
+            Modal.confirm({
+              title: '删除',
+              content: '确定删除该项吗？',
+              okText: '确认',
+              cancelText: '取消',
+              onOk: async () => {
+                const success = await handleRemoveOne(record)
+                if (success) {
+                  actionRef.current.reload()
+                }
+              },
+            })
+          }}
+        >
+          删除
+        </Button>
+      )
+    )
+  }
+
+  const options = {
     title: '操作',
     width: '220px',
     hideInSearch: true,
     render: (_, record) => [
-      <Button
-        type="link"
-        size="small"
-        key="edit"
-        // hidden={!access.hasPerms('system:user:edit')}
-        onClick={() => {
-          setCurrentRow(record)
-          setModalVisible(true)
-        }}
-      >
-        编辑
-      </Button>,
-      <Button
-        type="link"
-        size="small"
-        danger
-        key="remove"
-        // hidden={!access.hasPerms('system:user:remove')}
-        onClick={async () => {
-          Modal.confirm({
-            title: '删除',
-            content: '确定删除该项吗？',
-            okText: '确认',
-            cancelText: '取消',
-            onOk: async () => {
-              const success = await handleRemoveOne(record)
-              if (success) {
-                actionRef.current.reload()
-              }
-            },
-          })
-        }}
-      >
-        删除
-      </Button>,
+      viewOption(record),
+      editOption(record),
+      delOption(record),
     ],
   }
 
   // 每一行添加操作选项
   const result = columns.some((element) => element.title == '操作')
   if (!result) {
-    columns.push(editOptions)
+    columns.push(options)
   }
 
   return (
@@ -197,6 +236,7 @@ function TableList(props) {
       />
       {props.contianModal && (
         <TableModal
+          readOnly={readOnly}
           onSubmit={async (values) => {
             let success = false
             if (currentRow && currentRow[rowKey]) {

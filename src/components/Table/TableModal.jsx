@@ -32,6 +32,7 @@ function TableModal(props) {
         destroyOnClose
         onOk={handleOk}
         onCancel={handleCancel}
+        footer={props.readOnly ? null : undefined}
       >
         <ProForm
           form={form}
@@ -39,6 +40,7 @@ function TableModal(props) {
           onFinish={handleFinish}
           layout="horizontal"
           submitter={false}
+          readonly={props.readOnly}
           formRef={props.content.formRef}
         >
           {props.content.children}

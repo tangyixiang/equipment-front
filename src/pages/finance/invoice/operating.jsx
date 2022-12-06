@@ -73,7 +73,7 @@ const OperatTableList = () => {
       valueType: 'text',
       title: '合计不含税金额',
     },
-    { dataIndex: 'totalPrice', valueType: 'text', title: '合计税额' },
+    { dataIndex: 'totalTaxPrice', valueType: 'text', title: '合计税额' },
     { dataIndex: 'remark', valueType: 'text', title: '备注' },
     { dataIndex: 'billingStaff', valueType: 'text', title: '开票员' },
     { dataIndex: 'payee', valueType: 'text', title: '收款人' },
@@ -114,7 +114,12 @@ const OperatTableList = () => {
       title: '经营/拍卖单位电话',
     },
     { dataIndex: 'bankInfo', valueType: 'text', title: '开户行、账号' },
-    { dataIndex: 'dataSplit', valueType: 'text', title: '分录生成标识' },
+    {
+      dataIndex: 'dataSplit',
+      valueType: 'text',
+      title: '分录生成标识',
+      render: (_, record) => <span>{record.dataSplit ? '是' : '否'}</span>,
+    },
     { dataIndex: 'version', valueType: 'text', title: '版本号' },
   ]
 

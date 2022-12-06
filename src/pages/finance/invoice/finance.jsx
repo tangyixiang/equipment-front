@@ -54,7 +54,12 @@ const FinanceTableList = () => {
     { dataIndex: 'price', valueType: 'text', title: '金额' },
     { dataIndex: 'remark', valueType: 'text', title: '备注' },
     { dataIndex: 'status', valueType: 'text', title: '状态' },
-    { dataIndex: 'dataSplit', valueType: 'text', title: '分录生成标识' },
+    {
+      dataIndex: 'dataSplit',
+      valueType: 'text',
+      title: '分录生成标识',
+      render: (_, record) => <span>{record.dataSplit ? '是' : '否'}</span>,
+    },
     { dataIndex: 'version', valueType: 'text', title: '版本' },
   ]
 

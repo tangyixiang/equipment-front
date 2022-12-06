@@ -93,6 +93,12 @@ function EmployeeTableList() {
     list: listEmployee,
   }
 
+  const optionBtn = {
+    view: true,
+    edit: true,
+    del: true,
+  }
+
   const modalContent = {
     title: '职员信息',
     width: '70%',
@@ -107,6 +113,7 @@ function EmployeeTableList() {
         columns={columns}
         initData={false}
         func={crud}
+        optionBtn={optionBtn}
         labelWidth={80}
         contianModal={true}
         modalContent={modalContent}
