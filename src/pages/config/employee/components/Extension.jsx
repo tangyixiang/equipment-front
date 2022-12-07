@@ -8,11 +8,11 @@ import { getDicts } from '@/api/system/dict/data'
 
 function Extension(props) {
   const [editableKeys, setEditableRowKeys] = useState([])
-  const [chooseDimension, setChooseDimension] = useState('')
-  const [dataSource, setDataSource] = useState([])
 
   // 值的下拉选项
   const [dimensionValueOpt, setDimensionValueOpt] = useState({})
+
+  const { dimensionValueMap } = props
 
   const certificateColumns = [
     {
@@ -93,25 +93,29 @@ function Extension(props) {
           ></ProFormSelect>
         )
       },
-      // valueEnum: props.dimensionKeyOpt.valueEnum,
-      // fieldProps: {
-      //   onChange: (value) => {
-      //     setChooseDimension(value)
-      //     // transFormEditTableSelectData(value, setDimensionValueOpt)
-      //   },
-      // },
+      valueEnum: props.dimensionKeyOpt.valueEnum,
     },
     {
       title: '值',
       dataIndex: 'dimensionValue',
       valueType: 'select',
       dependencies: ['dimensionKey'],
+      renderText: (text, record) => {
+        if (!record.dimensionKey && !record.dimensionValue) return ''
+        let label = ''
+        dimensionValueMap[record.dimensionKey].forEach((item) => {
+          if (item.value == text) {
+            label = item.label
+          }
+        })
+        return label
+      },
       renderFormItem: (text, row, index) => {
         return (
           <ProFormSelect
             params={{ dimensionKey: row.record?.dimensionKey }}
             request={async (params) => {
-              console.log('parasm:%o', params)
+              // console.log('parasm:%o', params)
               if (!params.dimensionKey) return []
               const res = await getDicts(params.dimensionKey)
               let result = res.data.map((item) => ({
@@ -123,22 +127,6 @@ function Extension(props) {
           />
         )
       },
-
-      // params: { "dimensionKey": chooseDimension },
-      // dependencies: ['dimensionKey'],
-      // request: async (arg, option) => {
-      //   console.log(arg)
-      //   let curDimension = arg.dimensionKey || option?.record?.dimensionKey
-      //   if (!curDimension) {
-      //     return []
-      //   }
-      //   const res = await getDicts(curDimension)
-      //   let result = res.data.map((item) => ({
-      //     label: item.dictLabel,
-      //     value: item.dictValue,
-      //   }))
-      //   return result
-      // },
     },
     {
       title: '操作',

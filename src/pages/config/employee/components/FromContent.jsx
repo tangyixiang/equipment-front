@@ -17,17 +17,41 @@ import { getDicts } from '@/api/system/dict/data'
 function FromContent(props) {
   const [inspectionOpt, setInspectionOpt] = useState({})
   const [dimensionKeyOpt, setDimensionKeyOpt] = useState({})
+  const [dimensionValueMap, setDimensionValueMap] = useState({})
   const [sexOptions, setSexOptions] = useState([])
 
   useEffect(() => {
     transFormEditTableSelectData('inspection_dict', setInspectionOpt)
-    transFormEditTableOptions('user_extension_dict_type', setDimensionKeyOpt)
     getDicts('sys_user_sex').then((res) => {
       const opts = {}
       res.data.forEach((item) => {
         opts[item.dictValue] = item.dictLabel
       })
       setSexOptions(opts)
+    })
+    getDicts('user_extension_dict_type').then((res) => {
+      let opts = []
+      let valueEnum = {}
+      opts = res.data.map((item) => ({
+        label: item.dictLabel,
+        value: item.dictValue,
+      }))
+      res.data.forEach((item) => {
+        valueEnum[item.dictValue] = {
+          text: item.dictLabel,
+        }
+      })
+      let tempDimensionValueMap = {}
+      res.data.forEach((item) => {
+        getDicts(item.dictValue).then((res) => {
+          tempDimensionValueMap[item.dictValue] = res.data.map((item) => ({
+            label: item.dictLabel,
+            value: item.dictValue,
+          }))
+        })
+      })
+      setDimensionValueMap(tempDimensionValueMap)
+      setDimensionKeyOpt({ opts, valueEnum })
     })
   }, [])
 
@@ -205,6 +229,7 @@ function FromContent(props) {
       <Extension
         inspectionOpt={inspectionOpt}
         dimensionKeyOpt={dimensionKeyOpt}
+        dimensionValueMap={dimensionValueMap}
         formRef={props.formRef}
       />
     </>
