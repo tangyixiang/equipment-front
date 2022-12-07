@@ -56,7 +56,6 @@ const handleAdd = async (fields) => {
     return true
   } catch (error) {
     hide()
-    message.error('添加失败请重试！')
     return false
   }
 }

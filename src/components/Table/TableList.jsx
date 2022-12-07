@@ -214,6 +214,7 @@ function TableList(props) {
           </Button>,
         ]}
         pagination={{
+          defaultPageSize: 10,
           showQuickJumper: true,
           showSizeChanger: true,
           showTotal: (total) => `总共 ${total} 条`,
