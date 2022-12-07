@@ -58,7 +58,7 @@ export function getTokenExpireTime() {
 }
 
 export function clearSessionToken() {
-  localStorage.removeItem('userInfo')
+  sessionStorage.removeItem('userInfo')
   localStorage.removeItem('access_token')
   localStorage.removeItem('refresh_token')
   localStorage.removeItem('expireTime')
