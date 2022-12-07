@@ -3,6 +3,7 @@ import { Row, Col, Select } from 'antd'
 import { EditableProTable } from '@ant-design/pro-table'
 import { nanoid } from 'nanoid'
 import { transFormEditTableSelectData } from '@/utils/dictUtils'
+import { ProFormSelect } from '@ant-design/pro-form'
 import { getDicts } from '@/api/system/dict/data'
 
 function Extension(props) {
@@ -76,7 +77,7 @@ function Extension(props) {
       // valueType: 'select',
       renderFormItem: (text, row, index) => {
         return (
-          <Select
+          <ProFormSelect
             onChange={(value) => {
               transFormEditTableSelectData(value, setDimensionValueOpt)
               const tableDataSource =
@@ -89,10 +90,10 @@ function Extension(props) {
               // console.log(row.recordKey)
             }}
             options={props.dimensionKeyOpt.opts}
-          ></Select>
+          ></ProFormSelect>
         )
       },
-      valueEnum: props.dimensionKeyOpt.valueEnum,
+      // valueEnum: props.dimensionKeyOpt.valueEnum,
       // fieldProps: {
       //   onChange: (value) => {
       //     setChooseDimension(value)
@@ -104,18 +105,40 @@ function Extension(props) {
       title: '值',
       dataIndex: 'dimensionValue',
       valueType: 'select',
-      valueEnum: dimensionValueOpt,
+      dependencies: ['dimensionKey'],
+      renderFormItem: (text, row, index) => {
+        return (
+          <ProFormSelect
+            params={{ dimensionKey: row.record?.dimensionKey }}
+            request={async (params) => {
+              console.log('parasm:%o', params)
+              if (!params.dimensionKey) return []
+              const res = await getDicts(params.dimensionKey)
+              let result = res.data.map((item) => ({
+                label: item.dictLabel,
+                value: item.dictValue,
+              }))
+              return result
+            }}
+          />
+        )
+      },
+
       // params: { "dimensionKey": chooseDimension },
+      // dependencies: ['dimensionKey'],
       // request: async (arg, option) => {
-      //   console.log(arg);
-      //   let curDimension = arg.dimensionKey || option?.record?.dimensionKey;
+      //   console.log(arg)
+      //   let curDimension = arg.dimensionKey || option?.record?.dimensionKey
       //   if (!curDimension) {
-      //     return [];
+      //     return []
       //   }
       //   const res = await getDicts(curDimension)
-      //   let result = res.data.map(item => ({ label: item.dictLabel, value: item.dictValue }))
-      //   return result;
-      // }
+      //   let result = res.data.map((item) => ({
+      //     label: item.dictLabel,
+      //     value: item.dictValue,
+      //   }))
+      //   return result
+      // },
     },
     {
       title: '操作',
