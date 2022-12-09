@@ -127,12 +127,11 @@ function FromContent(props) {
           />
         </Col>
         <Col span={12} order={2}>
-          <ProFormSelect
-            name="roleId"
+          <ProFormText
+            name="positionName"
             // mode="multiple"
             label={'职员职务'}
             labelCol={{ span: 4 }}
-            options={null}
             placeholder="请选择职员职务"
             rules={[{ required: false, message: '请选择职员职务!' }]}
           />
