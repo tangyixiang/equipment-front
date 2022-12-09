@@ -129,7 +129,7 @@ function FromContent(props) {
         <Col span={12} order={2}>
           <ProFormSelect
             name="roleId"
-            mode="multiple"
+            // mode="multiple"
             label={'职员职务'}
             labelCol={{ span: 4 }}
             options={null}
