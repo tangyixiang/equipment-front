@@ -20,3 +20,11 @@ export function uploadSalary(period, fileList) {
     },
   })
 }
+
+export function salaryReport(param) {
+  return request({
+    url: '/report/employee/salary',
+    method: 'post',
+    data: param,
+  })
+}
