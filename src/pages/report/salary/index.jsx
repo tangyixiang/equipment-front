@@ -1,27 +1,54 @@
+import moment from 'moment'
+import { DatePicker } from 'antd'
 import ProTable from '@ant-design/pro-table'
-import React, { useState } from 'react'
-import { useEffect } from 'react'
 import { salaryReport } from '@/api/finance/salary'
+import { ProFormCheckbox } from '@ant-design/pro-form'
+import React, { useState, useRef } from 'react'
 
 function EmployeeSalaryReport() {
-  const [data, setData] = useState([])
-
-  const param = {
-    startPeriod: '202208',
-    endPeriod: '202210',
-    periodCondition: true,
-    deptCondition: true,
-    employeeTypeCondition: true,
-  }
-  // useEffect(() => {
-  //   salaryReport(param).then((res) => {
-  //     // const treeData = res.data
-  //     setData(res.data)
-  //   })
-  // }, [])
+  const actionRef = useRef()
 
   const columns = [
-    { dataIndex: 'name', valueType: 'text', title: '分组' },
+    {
+      key: 'range',
+      title: '选择范围',
+      hideInTable: true,
+      dataIndex: 'range',
+      renderFormItem: (item, { type, defaultRender, ...rest }, form) => {
+        return <DatePicker.RangePicker picker="month" format={'YYYYMM'} />
+      },
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+            message: '此项为必填项',
+          },
+        ],
+      },
+    },
+    {
+      key: 'condition',
+      hideInTable: true,
+      title: '聚合条件',
+      dataIndex: 'condition',
+      renderFormItem: (item, { type, defaultRender, ...rest }, form) => {
+        return <ProFormCheckbox.Group options={conditionCheck} />
+      },
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+            message: '此项为必填项',
+          },
+        ],
+      },
+    },
+    {
+      dataIndex: 'name',
+      valueType: 'text',
+      title: '分组',
+      hideInSearch: true,
+    },
     {
       dataIndex: 'postSalary',
       valueType: 'text',
@@ -199,24 +226,52 @@ function EmployeeSalaryReport() {
     },
   ]
 
+  const conditionCheck = [
+    {
+      key: 'period',
+      label: '期间',
+      value: 'period',
+    },
+    {
+      key: 'dept',
+      label: '部门',
+      value: 'dept',
+    },
+    {
+      key: 'employeeType',
+      label: '人员性质',
+      value: 'employeeType',
+    },
+  ]
+
   return (
     <>
       <ProTable
-        rowKey={'name'}
+        actionRef={actionRef}
+        rowKey="id"
         columns={columns}
+        form={{
+          ignoreRules: false,
+        }}
         scroll={{
           x: 4000,
         }}
-        request={(params) =>
-          salaryReport({ ...param }).then((res) => {
-            const result = {
-              data: res.data,
-              total: 0,
-              success: true,
-            }
-            return result
-          })
-        }
+        manualRequest={true}
+        search={{
+          optionRender: ({ searchText, resetText }, { form }, dom) => [
+            ...dom.reverse(),
+          ],
+        }}
+        request={async (params) => {
+          console.log(params)
+          const res = await salaryReport({ ...params })
+          const result = {
+            data: res.data,
+            total: 0,
+            success: true,
+          }
+          return result
+        }}
       />
     </>
   )
