@@ -91,7 +91,11 @@ function Login() {
                 },
               ]}
             >
-              <Input placeholder="用户名" className="rounded h-10" />
+              <Input
+                placeholder="用户名"
+                autoComplete="off"
+                className="rounded h-10"
+              />
             </Form.Item>
             <Form.Item
               name="password"
