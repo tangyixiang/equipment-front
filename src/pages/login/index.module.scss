@@ -6,9 +6,11 @@
   /* background: azure; */
   align-items: center;
   justify-content: center;
-  background: url("~@/assets/login/login_background.png") no-repeat;
+  background: url("~@/assets/login/login_bg.svg") no-repeat;
   background-size: cover;
-
+  @apply bg-slate-100 #{!important};
+  // @apply bg-[#1890ff] #{!important};
+  
   .loginBox {
     display: flex;
     display: -webkit-flex;

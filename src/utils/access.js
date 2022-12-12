@@ -33,33 +33,33 @@
 
 export function setSessionToken(access_token, refresh_token, expireTime) {
   if (access_token) {
-    localStorage.setItem('access_token', access_token)
+    sessionStorage.setItem('access_token', access_token)
   } else {
-    localStorage.removeItem('access_token')
+    sessionStorage.removeItem('access_token')
   }
   if (refresh_token) {
-    localStorage.setItem('refresh_token', refresh_token)
+    sessionStorage.setItem('refresh_token', refresh_token)
   } else {
-    localStorage.removeItem('refresh_token')
+    sessionStorage.removeItem('refresh_token')
   }
-  localStorage.setItem('expireTime', `${expireTime}`)
+  sessionStorage.setItem('expireTime', `${expireTime}`)
 }
 
 export function getAccessToken() {
-  return localStorage.getItem('access_token')
+  return sessionStorage.getItem('access_token')
 }
 
 export function getRefreshToken() {
-  return localStorage.getItem('refresh_token')
+  return sessionStorage.getItem('refresh_token')
 }
 
 export function getTokenExpireTime() {
-  return localStorage.getItem('expireTime')
+  return sessionStorage.getItem('expireTime')
 }
 
 export function clearSessionToken() {
   sessionStorage.removeItem('userInfo')
-  localStorage.removeItem('access_token')
-  localStorage.removeItem('refresh_token')
-  localStorage.removeItem('expireTime')
+  sessionStorage.removeItem('access_token')
+  sessionStorage.removeItem('refresh_token')
+  sessionStorage.removeItem('expireTime')
 }

@@ -10,6 +10,7 @@ import { getRouters } from '@/api/menu'
 import BlankPage from './components/BlankPage'
 import Joblog from './pages/monitor/joblog'
 import Home from './pages/home'
+import Welcome from './pages/home/Welcome'
 
 // const notFound = <Route path="*" element={<NoFoundPage />} />
 
@@ -45,11 +46,11 @@ function App() {
             </RequireAuth>
           }
         >
-          <Route index element={<Home />} />
+          <Route index element={<Welcome />} />
           <Route path="/home" element={<Home />} />
           <Route path="/monitor/job-log" element={<Joblog />} />
           {router}
-          <Route path="*" element={<BlankPage />} />
+          <Route path="*" element={<NoFoundPage />} />
         </Route>
         {init && <Route path="*" element={<NoFoundPage />} />}
       </Routes>

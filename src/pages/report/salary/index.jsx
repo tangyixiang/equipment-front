@@ -1,9 +1,8 @@
 import moment from 'moment'
-import { DatePicker } from 'antd'
+import { DatePicker, Checkbox } from 'antd'
 import ProTable from '@ant-design/pro-table'
 import { salaryReport } from '@/api/finance/salary'
-import { ProFormCheckbox } from '@ant-design/pro-form'
-import React, { useState, useRef } from 'react'
+import React, { useRef } from 'react'
 
 function EmployeeSalaryReport() {
   const actionRef = useRef()
@@ -32,7 +31,7 @@ function EmployeeSalaryReport() {
       title: '聚合条件',
       dataIndex: 'condition',
       renderFormItem: (item, { type, defaultRender, ...rest }, form) => {
-        return <ProFormCheckbox.Group options={conditionCheck} />
+        return <Checkbox.Group options={conditionCheck} />
       },
       formItemProps: {
         rules: [

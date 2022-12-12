@@ -41,8 +41,8 @@ function Login() {
         setSessionToken(response.token, response.token, expireTime)
         message.success('登录成功')
         getUserProfile().then((res) => {
-          userStore.setUserInfo(res.data)
-          // auth.signin(res.data)
+          const { userName, nickName } = res.data
+          userStore.setUserInfo({ userName, nickName })
           navigate(from, { replace: true })
         })
         return
@@ -63,7 +63,7 @@ function Login() {
     <div className={styles.login}>
       <div className={styles.loginBox}>
         <div className={styles.boxLeft}>
-          <img alt="logo" src={require('@/assets/login/login_logo.png')} />
+          <img alt="logo" src={require('@/assets/login/login_left.png')} />
         </div>
         <div className={styles.boxRight}>
           <Form

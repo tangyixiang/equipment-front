@@ -1,8 +1,13 @@
 import request from '@/utils/request'
+import { Encrypt } from '@/utils/crypto'
 
 // 登录方法
 export function login(params) {
-  const data = params
+  // const data = params
+  const data = {
+    ...params,
+    password: Encrypt(params.password.trim()),
+  }
   return request({
     url: '/login',
     headers: {

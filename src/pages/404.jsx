@@ -8,7 +8,7 @@ function NoFoundPage() {
   return (
     <Result
       status="404"
-      title="404"
+      title="无法找到该页面"
       extra={
         <Button type="primary" onClick={() => navigate('/')}>
           返回首页
