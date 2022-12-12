@@ -19,7 +19,7 @@ function Login() {
   const from = location.state?.from?.pathname || '/'
 
   useEffect(() => {
-    getCaptchaCode()
+    // getCaptchaCode()
   }, [])
 
   const getCaptchaCode = async () => {
