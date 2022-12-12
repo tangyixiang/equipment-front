@@ -4,6 +4,7 @@ import { Search, Table, useTable, withTable } from 'table-render'
 import { listSalary } from '@/api/finance/salary'
 import { download } from '@/utils/request'
 import UploadForm from './components/upload'
+import { useNavigate } from 'react-router-dom'
 
 const schema = {
   type: 'object',
@@ -19,6 +20,7 @@ const schema = {
 const EmployeeSalaryTableList = () => {
   const [selectedRowsState, setSelectedRows] = useState([])
   const [uploadModal, setUploadModal] = useState(false)
+  const navigate = useNavigate()
   const { refresh } = useTable()
 
   const columns = [
@@ -157,6 +159,9 @@ const EmployeeSalaryTableList = () => {
           }}
           toolbarAction
           toolbarRender={() => [
+            <Button type="primary" onClick={() => navigate('/report/salary')}>
+              工资统计报表
+            </Button>,
             <Button
               type="primary"
               key="template"

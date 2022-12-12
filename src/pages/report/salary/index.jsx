@@ -1,11 +1,13 @@
 import moment from 'moment'
-import { DatePicker, Checkbox } from 'antd'
+import { DatePicker, Checkbox, Button } from 'antd'
 import ProTable from '@ant-design/pro-table'
 import { salaryReport } from '@/api/finance/salary'
 import React, { useRef } from 'react'
+import { downloadUseJson } from '@/utils/request'
 
 function EmployeeSalaryReport() {
   const actionRef = useRef()
+  const formRef = useRef()
 
   const columns = [
     {
@@ -249,6 +251,7 @@ function EmployeeSalaryReport() {
         actionRef={actionRef}
         rowKey="id"
         columns={columns}
+        formRef={formRef}
         form={{
           ignoreRules: false,
         }}
@@ -256,6 +259,27 @@ function EmployeeSalaryReport() {
           x: 4000,
         }}
         manualRequest={true}
+        toolbar={{
+          actions: [
+            <Button
+              key="primary"
+              type="primary"
+              onClick={() => {
+                const range = formRef.current
+                  .getFieldValue('range')
+                  .map((item) => moment(item).format('YYYY-MM-DD HH:mm:ss'))
+                const condition = formRef.current.getFieldValue('condition')
+                downloadUseJson(
+                  '/report/employee/salary/result',
+                  { range: range, condition: condition },
+                  '工资统计结果.xlsx'
+                )
+              }}
+            >
+              结果导出
+            </Button>,
+          ],
+        }}
         search={{
           optionRender: ({ searchText, resetText }, { form }, dom) => [
             ...dom.reverse(),
