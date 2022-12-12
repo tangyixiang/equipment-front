@@ -54,15 +54,11 @@ const ExecuteTask = (props) => {
                 label={'任务类别'}
                 labelCol={{ span: 4 }}
                 request={async () => {
-                  let data = []
                   const res = await listJob({ jobGroup: 'BUSI' })
-                  if (res.code === 200) {
-                    data = res.rows.map((item) => ({
-                      label: item.jobName,
-                      value: item.jobId,
-                    }))
-                  }
-                  return data
+                  return res.rows.map((item) => ({
+                    label: item.jobName,
+                    value: item.jobId,
+                  }))
                 }}
                 rules={[
                   {
@@ -80,15 +76,11 @@ const ExecuteTask = (props) => {
                 label={'会计期'}
                 labelCol={{ span: 4 }}
                 request={async () => {
-                  let data = []
                   const res = await getDicts('invoice_accounting_period')
-                  if (res.code === 200) {
-                    data = res.data.map((item) => ({
-                      label: item.dictLabel,
-                      value: item.dictLabel,
-                    }))
-                  }
-                  return data
+                  return res.data.map((item) => ({
+                    label: item.dictLabel,
+                    value: item.dictLabel,
+                  }))
                 }}
                 rules={[
                   {
