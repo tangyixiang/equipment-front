@@ -43,7 +43,8 @@ const RoleForm = (props) => {
     form.resetFields()
   }
   const handleFinish = (values) => {
-    props.onSubmit({ ...values, menuIds })
+    const data = menuIds == undefined ? menuCheckedKeys : menuIds
+    props.onSubmit({ ...values, menuIds: data })
   }
 
   return (
