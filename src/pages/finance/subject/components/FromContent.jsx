@@ -9,7 +9,7 @@ function FromContent(props) {
         <Col span={24}>
           <ProFormSelect
             name="categoryId"
-            label={'客户编号'}
+            label={'分录类别'}
             labelCol={{ span: 4 }}
             valueEnum={props.kmOptions}
           />
