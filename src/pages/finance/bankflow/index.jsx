@@ -15,7 +15,7 @@ const schema = {
       type: 'string',
       width: '25%',
     },
-    tradeTime: {
+    tradeTimeArray: {
       title: '交易日期',
       type: 'range',
       format: 'date',
@@ -151,11 +151,11 @@ const BankFlowTableList = () => {
   ]
 
   const searchApi = (params) => {
+    console.log(params)
     const requestParams = {
       ...params,
       pageNum: params.current,
     }
-    // console.log('params >>> ', requestParams)
 
     return listBankFlow(requestParams).then((res) => {
       const result = {

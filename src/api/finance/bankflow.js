@@ -1,10 +1,13 @@
 import request from '@/utils/request'
 
 export function listBankFlow(query) {
+  const { pageNum, pageSize } = query
+  const pageParam = { pageNum, pageSize }
   return request({
     url: '/bank/flow/list',
-    method: 'get',
-    params: query,
+    method: 'post',
+    params: pageParam,
+    data: query,
   })
 }
 
