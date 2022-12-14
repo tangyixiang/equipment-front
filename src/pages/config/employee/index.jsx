@@ -6,7 +6,7 @@ import {
   addEmployee,
   updateEmployee,
 } from '@/api/config/employee'
-import FromContent from './components/FromContent'
+import FormContent from './components/FormContent'
 import { useEffect } from 'react'
 import { listPost } from '@/api/system/post'
 import { listDept } from '@/api/system/dept'
@@ -103,7 +103,7 @@ function EmployeeTableList() {
     title: '职员信息',
     width: '70%',
     formRef: formRef,
-    children: <FromContent formRef={formRef} />,
+    children: <FormContent formRef={formRef} />,
   }
 
   return (
@@ -115,7 +115,7 @@ function EmployeeTableList() {
         func={crud}
         optionBtn={optionBtn}
         labelWidth={80}
-        contianModal={true}
+        contianModal
         modalContent={modalContent}
       />
     </>

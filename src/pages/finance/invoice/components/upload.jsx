@@ -38,7 +38,7 @@ const UploadForm = (props) => {
     uploadInvoice(props.path + '?period=' + period, fileList).then(() => {
       message.success('导入成功')
       handleCancel()
-      props.refresh()
+      props.actionRef.current?.reload()
     })
   }
 

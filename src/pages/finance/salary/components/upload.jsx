@@ -65,7 +65,7 @@ const UploadForm = (props) => {
     uploadSalary(period, fileList).then((res) => {
       message.success('导入成功')
       handleCancel()
-      props.refresh()
+      props.actionRef.current?.reload()
     })
   }
 

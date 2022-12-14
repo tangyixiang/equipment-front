@@ -4,7 +4,9 @@ import ProTable from '@ant-design/pro-table'
 import TableModal from './TableModal'
 
 function TableList(props) {
-  const { func, optionBtn, rowKey, columns, labelWidth } = props
+  const { func, optionBtn, rowKey, columns, scroll, labelWidth } = props
+  const extratoolBar = props.extratoolBar || []
+  const hasModal = props.contianModal != undefined
 
   /**
    * 关闭Modal
@@ -91,6 +93,9 @@ function TableList(props) {
   // 执行初始化方法
   useEffect(() => {
     props.initData && func.init()
+    if (props.tableRef) {
+      props.tableRef(actionRef)
+    }
   }, [])
 
   const viewOption = (record) => {
@@ -127,7 +132,7 @@ function TableList(props) {
             setModalVisible(true)
           }}
         >
-          编辑
+          {optionBtn.editName || '编辑'}
         </Button>
       )
     )
@@ -157,7 +162,7 @@ function TableList(props) {
             })
           }}
         >
-          删除
+          {optionBtn.del?.name || '删除'}
         </Button>
       )
     )
@@ -176,7 +181,7 @@ function TableList(props) {
 
   // 每一行添加操作选项
   const result = columns.some((element) => element.title == '操作')
-  if (!result) {
+  if (!result && Object.values(optionBtn).indexOf(true) > -1) {
     columns.push(options)
   }
 
@@ -186,7 +191,7 @@ function TableList(props) {
         actionRef={actionRef}
         rowKey={rowKey}
         key="TableList"
-        // columns={renderColumn}
+        scroll={scroll ? scroll : undefined}
         columns={columns}
         search={{
           labelWidth: labelWidth,
@@ -195,23 +200,24 @@ function TableList(props) {
           <Button
             type="primary"
             key="add"
-            hidden={props.toolBarAdd}
+            hidden={props.toolBar?.Add.hidden}
             onClick={async () => {
               setCurrentRow(undefined)
               setModalVisible(true)
             }}
           >
-            新增
+            {props.toolBar?.Add.name || '新建'}
           </Button>,
           <Button
             type="primary"
             danger
             key="remove"
-            hidden={props.toolBarDel}
+            hidden={props.toolBar?.Del.hidden}
             onClick={async () => handleRemove(selectedRowsState)}
           >
-            删除
+            {props.toolBar?.Del.name || '删除'}
           </Button>,
+          ...extratoolBar,
         ]}
         pagination={{
           defaultPageSize: 10,
@@ -235,7 +241,7 @@ function TableList(props) {
           },
         }}
       />
-      {props.contianModal && (
+      {hasModal && (
         <TableModal
           readOnly={readOnly}
           onSubmit={async (values) => {
@@ -258,7 +264,7 @@ function TableList(props) {
           }}
           visible={modalVisible}
           values={currentRow || {}}
-          content={props.modalContent}
+          content={props.modalContent || {}}
         />
       )}
     </>

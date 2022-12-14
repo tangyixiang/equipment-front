@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import TableList from '@/components/Table/TableList'
-import FromContent from './components/FromContent'
+import FromContent from './components/FormContent'
 import {
   addSubject,
   updateSubject,
@@ -109,7 +109,7 @@ function SubjectTableList() {
         func={crud}
         optionBtn={optionBtn}
         labelWidth={100}
-        contianModal={true}
+        contianModal
         modalContent={modalContent}
       />
     </>

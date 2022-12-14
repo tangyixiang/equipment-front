@@ -26,8 +26,8 @@ function TableModal(props) {
     <>
       <Modal
         forceRender
-        width={props.content.width}
-        title={props.content.title}
+        width={props.content?.width}
+        title={props.content?.title}
         open={props.visible}
         destroyOnClose
         onOk={handleOk}
@@ -41,9 +41,9 @@ function TableModal(props) {
           layout="horizontal"
           submitter={false}
           readonly={props.readOnly}
-          formRef={props.content.formRef}
+          formRef={props.content?.formRef}
         >
-          {props.content.children}
+          {props.content?.children}
         </ProForm>
       </Modal>
     </>

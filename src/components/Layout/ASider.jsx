@@ -1,6 +1,6 @@
 import React from 'react'
 import { Layout, Menu } from 'antd'
-import { useNavigate, Route } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { createIcon } from '@/utils/IconUtils'
 
 function ASider(props) {

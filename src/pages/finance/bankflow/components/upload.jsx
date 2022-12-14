@@ -48,7 +48,6 @@ const UploadForm = (props) => {
     uploadFlow(account, startDate, endDate, fileList).then((res) => {
       message.success('导入成功')
       handleCancel()
-      props.refresh()
     })
   }
 

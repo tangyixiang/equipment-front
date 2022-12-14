@@ -1,5 +1,5 @@
 import React from 'react'
-import { Layout, Tabs } from 'antd'
+import { Layout } from 'antd'
 import ASider from './ASider'
 import { Outlet } from 'react-router-dom'
 import AHeader from './AHeader'

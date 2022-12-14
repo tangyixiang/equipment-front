@@ -70,11 +70,11 @@ function Login() {
             name="loginForm"
             className="w-[336px]"
             onFinish={handleSubmit}
-            // initialValues={{
-            //   code: '342432',
-            //   username: 'admin',
-            //   password: 'admin123',
-            // }}
+            initialValues={{
+              code: '342432',
+              username: 'admin',
+              password: 'admin123',
+            }}
           >
             <Form.Item>
               <div className="flex justify-center">

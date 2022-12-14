@@ -14,7 +14,7 @@ import { listPost } from '@/api/system/post'
 import { getDeptTreeList } from '@/api/system/dept'
 import { getDicts } from '@/api/system/dict/data'
 
-function FromContent(props) {
+function FormContent(props) {
   const [inspectionOpt, setInspectionOpt] = useState({})
   const [dimensionKeyOpt, setDimensionKeyOpt] = useState({})
   const [dimensionValueMap, setDimensionValueMap] = useState({})
@@ -235,4 +235,4 @@ function FromContent(props) {
   )
 }
 
-export default FromContent
+export default FormContent

@@ -1,90 +1,52 @@
+import React, { useState } from 'react'
 import { Button } from 'antd'
-import React, { useState, useEffect } from 'react'
-
-import { Search, Table, useTable, withTable } from 'table-render'
-import { listBankFlow } from '@/api/finance/bankflow'
-
-import { download } from '@/utils/request'
+import TableList from '@/components/Table/TableList'
 import UploadForm from './components/upload'
+import { listBankFlow } from '@/api/finance/bankflow'
+import { download } from '@/utils/request'
 
-const schema = {
-  type: 'object',
-  properties: {
-    selfAccount: {
-      title: '本方账号',
-      type: 'string',
-      width: '25%',
-    },
-    tradeTimeArray: {
-      title: '交易日期',
-      type: 'range',
-      format: 'date',
-      width: '25%',
-    },
-    adversaryBankCode: {
-      title: '对方行号',
-      type: 'string',
-      width: '25%',
-    },
-    adversaryAccount: {
-      title: '对方账号',
-      type: 'string',
-      width: '25%',
-    },
-    adversaryOrgName: {
-      title: '对方单位名称',
-      type: 'string',
-      width: '25%',
-    },
-    summary: {
-      title: '摘要',
-      type: 'string',
-      width: '25%',
-    },
-    comment: {
-      title: '用途',
-      type: 'string',
-      width: '25%',
-    },
-  },
-}
-
-const BankFlowTableList = () => {
-  const [selectedRowsState, setSelectedRows] = useState([])
+function BankFlowTableList() {
   const [uploadModal, setUploadModal] = useState(false)
-  const { refresh } = useTable()
+  const [tableRef, setTableRef] = useState()
 
   const columns = [
     {
       title: '流水ID',
       dataIndex: 'id',
+      hideInSearch: true,
       valueType: 'text',
     },
     {
       title: '凭证号',
       dataIndex: 'bankSiteCode',
       valueType: 'text',
+      hideInSearch: true,
+      width: 200,
     },
     {
       title: '本方账号',
       dataIndex: 'selfAccount',
       valueType: 'text',
+      width: 200,
     },
     {
       title: '对方账号',
       dataIndex: 'adversaryAccount',
       valueType: 'text',
+      width: 200,
     },
     {
       title: '交易时间',
-      dataIndex: 'tradeTime',
-      valueType: 'text',
+      dataIndex: 'tradeTimeArray',
+      valueType: 'dateRange',
+      render: (_, row, index, action) => row.tradeTime,
     },
     {
       title: '借/贷',
       dataIndex: 'tradeType',
       valueType: 'select',
-      enum: {
+      hideInSearch: true,
+      valueEnum: {
         1: '借',
         2: '贷',
       },
@@ -94,6 +56,7 @@ const BankFlowTableList = () => {
       title: '金额',
       dataIndex: 'price',
       valueType: 'text',
+      hideInSearch: true,
     },
     {
       title: '对方行号',
@@ -121,13 +84,15 @@ const BankFlowTableList = () => {
       title: '个性化信息',
       dataIndex: 'otherInfo',
       valueType: 'text',
+      hideInSearch: true,
       width: 300,
     },
     {
       title: '对账标识',
       dataIndex: 'reconciliationFlag',
       valueType: 'select',
-      enum: {
+      hideInSearch: true,
+      valueEnum: {
         1: 'Y',
         2: 'N',
       },
@@ -137,7 +102,8 @@ const BankFlowTableList = () => {
       title: '对账类别',
       dataIndex: 'reconciliationModel',
       valueType: 'select',
-      enum: {
+      hideInSearch: true,
+      valueEnum: {
         1: '自动',
         2: '手动',
       },
@@ -146,75 +112,65 @@ const BankFlowTableList = () => {
     {
       title: '应收对账ID',
       dataIndex: 'associationId',
+      hideInSearch: true,
       valueType: 'text',
     },
   ]
 
-  const searchApi = (params) => {
-    console.log(params)
-    const requestParams = {
-      ...params,
-      pageNum: params.current,
-    }
+  const crud = {
+    list: listBankFlow,
+  }
 
-    return listBankFlow(requestParams).then((res) => {
-      const result = {
-        rows: res.rows,
-        total: res.total,
-        success: true,
-      }
-      return result
-    })
+  const optionBtn = {
+    view: false,
+    edit: false,
+    del: false,
+  }
+  const toolBar = {
+    Add: { hidden: true },
+    Del: { hidden: true },
   }
 
   return (
     <>
-      <div style={{ width: '100%', float: 'right' }}>
-        <Search schema={schema} api={searchApi} displayType="row" />
-        <Table
-          rowKey="id"
-          key="tablelist"
-          scroll={{
-            x: 2500,
-          }}
-          pagination={{
-            showQuickJumper: true,
-            showSizeChanger: true,
-            showTotal: (total) => `总共 ${total} 条`,
-          }}
-          toolbarAction
-          toolbarRender={() => [
-            <Button
-              type="primary"
-              key="template"
-              onClick={async () => {
-                download(
-                  '/bank/flow/template/download',
-                  {},
-                  '银行流水导入模板.xlsx'
-                )
-              }}
-            >
-              下载模板
-            </Button>,
-            <Button onClick={() => setUploadModal(true)}>批量导入</Button>,
-          ]}
-          columns={columns}
-          rowSelection={{
-            onChange: (_, selectedRows) => {
-              setSelectedRows(selectedRows)
-            },
-          }}
-        />
-      </div>
-
+      <TableList
+        rowKey={'id'}
+        columns={columns}
+        initData={false}
+        func={crud}
+        tableRef={setTableRef}
+        optionBtn={optionBtn}
+        labelWidth={100}
+        scroll={{
+          x: 3000,
+        }}
+        toolBar={toolBar}
+        extratoolBar={[
+          <Button
+            type="primary"
+            key="template"
+            onClick={async () => {
+              download(
+                '/bank/flow/template/download',
+                {},
+                '银行流水导入模板.xlsx'
+              )
+            }}
+          >
+            下载模板
+          </Button>,
+          <Button onClick={() => setUploadModal(true)}>批量导入</Button>,
+        ]}
+      />
       <UploadForm
         visible={uploadModal}
-        onCancel={setUploadModal}
-        refresh={refresh}
+        onCancel={() => {
+          setUploadModal(false)
+          tableRef.current.reload()
+        }}
       />
     </>
   )
 }
 
-export default withTable(BankFlowTableList)
+export default BankFlowTableList

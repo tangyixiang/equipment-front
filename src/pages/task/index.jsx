@@ -1,33 +1,13 @@
-import { Button, Upload } from 'antd'
-import React, { useState, useEffect } from 'react'
-import { Search, Table, withTable } from 'table-render'
+import React, { useRef, useState, useEffect } from 'react'
+import TableList from '@/components/Table/TableList'
+import { Button } from 'antd'
 import { download } from '@/utils/request'
-import { listTaskLog } from '@/api/task'
+import { listTaskLog, runTask } from '@/api/task'
+import FormContent from './components/FormContent'
 import { getDicts } from '@/api/system/dict/data'
-import ExecuteTask from './components/execute'
 
-const schema = {
-  type: 'object',
-  properties: {
-    jobName: {
-      title: '作业名称',
-      type: 'string',
-      width: '25%',
-    },
-    status: {
-      title: '当前状态',
-      type: 'string',
-      enum: [0, 1],
-      enumNames: ['已完成', '失败'],
-      width: '25%',
-      widget: 'select',
-    },
-  },
-}
-
-const TaskTableList = () => {
-  const [selectedRowsState, setSelectedRows] = useState([])
-  const [taskModal, setTaskModal] = useState(false)
+function TaskTableList() {
+  const formRef = useRef()
   const [jobGroupOptions, setJobGroupOptions] = useState([])
 
   useEffect(() => {
@@ -43,20 +23,36 @@ const TaskTableList = () => {
   }, [])
 
   const columns = [
-    { dataIndex: 'jobLogId', valueType: 'text', title: '作业流水ID' },
+    {
+      dataIndex: 'jobLogId',
+      valueType: 'text',
+      hideInSearch: true,
+      title: '作业流水ID',
+    },
     {
       dataIndex: 'jobGroup',
       valueType: 'text',
-      enum: jobGroupOptions,
+      valueEnum: jobGroupOptions,
+      hideInSearch: true,
       title: '作业类别',
     },
     { dataIndex: 'jobName', valueType: 'text', title: '作业名称' },
-    { dataIndex: 'startTime', valueType: 'text', title: '开始执行时间' },
-    { dataIndex: 'stopTime', valueType: 'text', title: '结束执行时间' },
+    {
+      dataIndex: 'startTime',
+      valueType: 'text',
+      hideInSearch: true,
+      title: '开始执行时间',
+    },
+    {
+      dataIndex: 'stopTime',
+      valueType: 'text',
+      hideInSearch: true,
+      title: '结束执行时间',
+    },
     {
       dataIndex: 'status',
       valueType: 'select',
-      enum: {
+      valueEnum: {
         0: '已完成',
         1: '失败',
       },
@@ -65,6 +61,7 @@ const TaskTableList = () => {
     {
       title: '操作',
       width: '120px',
+      hideInSearch: true,
       render: (_, record) => {
         if (record.taskType == 1 && record.status == '0') {
           return [
@@ -90,52 +87,44 @@ const TaskTableList = () => {
     },
   ]
 
-  const searchApi = (params) => {
-    const requestParams = {
-      ...params,
-      pageNum: params.current,
-    }
-    // console.log('params >>> ', requestParams)
-
-    return listTaskLog(requestParams).then((res) => {
-      const result = {
-        rows: res.rows,
-        total: res.total,
-        success: true,
-      }
-      return result
-    })
+  const crud = {
+    add: runTask,
+    update: runTask,
+    list: listTaskLog,
   }
 
+  const optionBtn = {
+    view: false,
+    edit: true,
+    del: true,
+  }
+
+  const toolBar = {
+    Add: { hidden: false, name: '手工运行作业' },
+    Del: { hidden: true, name: '' },
+  }
+
+  const modalContent = {
+    title: '作业任务运行',
+    width: '35%',
+    formRef: formRef,
+    children: <FormContent formRef={formRef} />,
+  }
   return (
     <>
-      <div style={{ width: '100%', float: 'right' }}>
-        <Search schema={schema} api={searchApi} displayType="row" />
-        <Table
-          rowKey="jobLogId"
-          key="tablelist"
-          pagination={{
-            showQuickJumper: true,
-            showSizeChanger: true,
-            showTotal: (total) => `总共 ${total} 条`,
-          }}
-          toolbarAction
-          toolbarRender={() => [
-            <Button type="primary" onClick={() => setTaskModal(true)}>
-              手工运行作业
-            </Button>,
-          ]}
-          columns={columns}
-          rowSelection={{
-            onChange: (_, selectedRows) => {
-              setSelectedRows(selectedRows)
-            },
-          }}
-        />
-      </div>
-      <ExecuteTask visible={taskModal} onCancel={setTaskModal} />
+      <TableList
+        rowKey={'jobLogId'}
+        columns={columns}
+        initData={false}
+        func={crud}
+        optionBtn={optionBtn}
+        labelWidth={80}
+        toolBar={toolBar}
+        contianModal
+        modalContent={modalContent}
+      />
     </>
   )
 }
 
-export default withTable(TaskTableList)
+export default TaskTableList

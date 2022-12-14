@@ -1,102 +1,198 @@
-import { Button, Upload } from 'antd'
-import React, { useState, useEffect } from 'react'
-import { Search, Table, useTable, withTable } from 'table-render'
+import { Button } from 'antd'
+import React, { useState, useRef } from 'react'
 import { listFinance } from '@/api/finance/invoice'
 import { download } from '@/utils/request'
 import UploadForm from './components/upload'
-
-const schema = {
-  type: 'object',
-  properties: {
-    invoicingPeriod: {
-      title: '发票期间',
-      type: 'string',
-      width: '25%',
-    },
-  },
-}
+import ProTable from '@ant-design/pro-table'
 
 const FinanceTableList = () => {
   const [selectedRowsState, setSelectedRows] = useState([])
   const [uploadModal, setUploadModal] = useState(false)
-  const { refresh } = useTable()
+  const actionRef = useRef()
 
   const columns = [
     { dataIndex: 'invoicingPeriod', valueType: 'text', title: '发票期间' },
-    { dataIndex: 'invoicingDate', valueType: 'text', title: '开票时间' },
-    { dataIndex: 'orgName', valueType: 'text', title: '单位名称' },
-    { dataIndex: 'invoicingOrgName', valueType: 'text', title: '开票机构' },
-    { dataIndex: 'invoiceBm', valueType: 'text', title: '票据编码' },
-    { dataIndex: 'invoiceName', valueType: 'text', title: '票据名称' },
-    { dataIndex: 'invoiceCode', valueType: 'text', title: '票据代码' },
-    { dataIndex: 'invoiceId', valueType: 'text', title: '票号' },
-    { dataIndex: 'payer', valueType: 'text', title: '缴款人' },
+    {
+      dataIndex: 'invoicingDate',
+      valueType: 'text',
+      title: '开票时间',
+      hideInSearch: true,
+    },
+    {
+      dataIndex: 'orgName',
+      valueType: 'text',
+      title: '单位名称',
+      hideInSearch: true,
+    },
+    {
+      dataIndex: 'invoicingOrgName',
+      valueType: 'text',
+      title: '开票机构',
+      hideInSearch: true,
+    },
+    {
+      dataIndex: 'invoiceBm',
+      valueType: 'text',
+      title: '票据编码',
+      hideInSearch: true,
+    },
+    {
+      dataIndex: 'invoiceName',
+      valueType: 'text',
+      title: '票据名称',
+      hideInSearch: true,
+    },
+    {
+      dataIndex: 'invoiceCode',
+      valueType: 'text',
+      title: '票据代码',
+      hideInSearch: true,
+    },
+    {
+      dataIndex: 'invoiceId',
+      valueType: 'text',
+      title: '票号',
+      hideInSearch: true,
+    },
+    {
+      dataIndex: 'payer',
+      valueType: 'text',
+      title: '缴款人',
+      hideInSearch: true,
+    },
     {
       dataIndex: 'socialCreditCode',
       valueType: 'text',
       title: '社会统一信用代码',
+      hideInSearch: true,
     },
-    { dataIndex: 'printed', valueType: 'text', title: '已打印' },
-    { dataIndex: 'redInvoiceFlag', valueType: 'text', title: '已开红票' },
-    { dataIndex: 'paperInvoiceNo', valueType: 'text', title: '相关纸质票号' },
+    {
+      dataIndex: 'printed',
+      valueType: 'text',
+      title: '已打印',
+      hideInSearch: true,
+    },
+    {
+      dataIndex: 'redInvoiceFlag',
+      valueType: 'text',
+      title: '已开红票',
+      hideInSearch: true,
+    },
+    {
+      dataIndex: 'paperInvoiceNo',
+      valueType: 'text',
+      title: '相关纸质票号',
+      hideInSearch: true,
+    },
     {
       dataIndex: 'electronInvoiceNo',
       valueType: 'text',
       title: '相关电子票号',
+      hideInSearch: true,
     },
-    { dataIndex: 'checkCode', valueType: 'text', title: '校验码' },
-    { dataIndex: 'creator', valueType: 'text', title: '编制人' },
-    { dataIndex: 'itemCode', valueType: 'text', title: '项目编码' },
-    { dataIndex: 'itemName', valueType: 'text', title: '项目名称' },
-    { dataIndex: 'unit', valueType: 'text', title: '计量单位' },
-    { dataIndex: 'quantity', valueType: 'text', title: '数量' },
-    { dataIndex: 'standard', valueType: 'text', title: '标准' },
-    { dataIndex: 'price', valueType: 'text', title: '金额' },
-    { dataIndex: 'remark', valueType: 'text', title: '备注' },
-    { dataIndex: 'status', valueType: 'text', title: '状态' },
+    {
+      dataIndex: 'checkCode',
+      valueType: 'text',
+      title: '校验码',
+      hideInSearch: true,
+    },
+    {
+      dataIndex: 'creator',
+      valueType: 'text',
+      title: '编制人',
+      hideInSearch: true,
+    },
+    {
+      dataIndex: 'itemCode',
+      valueType: 'text',
+      title: '项目编码',
+      hideInSearch: true,
+    },
+    {
+      dataIndex: 'itemName',
+      valueType: 'text',
+      title: '项目名称',
+      hideInSearch: true,
+    },
+    {
+      dataIndex: 'unit',
+      valueType: 'text',
+      title: '计量单位',
+      hideInSearch: true,
+    },
+    {
+      dataIndex: 'quantity',
+      valueType: 'text',
+      title: '数量',
+      hideInSearch: true,
+    },
+    {
+      dataIndex: 'standard',
+      valueType: 'text',
+      title: '标准',
+      hideInSearch: true,
+    },
+    {
+      dataIndex: 'price',
+      valueType: 'text',
+      title: '金额',
+      hideInSearch: true,
+    },
+    {
+      dataIndex: 'remark',
+      valueType: 'text',
+      title: '备注',
+      hideInSearch: true,
+    },
+    {
+      dataIndex: 'status',
+      valueType: 'text',
+      title: '状态',
+      hideInSearch: true,
+    },
     {
       dataIndex: 'dataSplit',
       valueType: 'text',
       title: '分录生成标识',
+      hideInSearch: true,
       render: (_, record) => <span>{record.dataSplit ? '是' : '否'}</span>,
     },
-    { dataIndex: 'version', valueType: 'text', title: '版本' },
+    {
+      dataIndex: 'version',
+      valueType: 'text',
+      title: '版本',
+      hideInSearch: true,
+    },
   ]
-
-  const searchApi = (params) => {
-    const requestParams = {
-      ...params,
-      pageNum: params.current,
-    }
-    // console.log('params >>> ', requestParams)
-
-    return listFinance(requestParams).then((res) => {
-      const result = {
-        rows: res.rows,
-        total: res.total,
-        success: true,
-      }
-      return result
-    })
-  }
 
   return (
     <>
       <div style={{ width: '100%', float: 'right' }}>
-        <Search schema={schema} api={searchApi} displayType="row" />
-        <Table
+        <ProTable
+          actionRef={actionRef}
           rowKey="id"
           key="tablelist"
           scroll={{
             x: 4600,
           }}
+          columns={columns}
+          request={(params) =>
+            listFinance({ ...params, pageNum: params.current }).then((res) => {
+              const result = {
+                data: res.rows,
+                total: res.total,
+                success: true,
+              }
+              return result
+            })
+          }
           pagination={{
+            defaultPageSize: 10,
             showQuickJumper: true,
             showSizeChanger: true,
             showTotal: (total) => `总共 ${total} 条`,
           }}
-          toolbarAction
-          toolbarRender={() => [
+          toolBarRender={() => [
             <Button
               type="primary"
               key="template"
@@ -112,7 +208,6 @@ const FinanceTableList = () => {
             </Button>,
             <Button onClick={() => setUploadModal(true)}>批量导入</Button>,
           ]}
-          columns={columns}
           rowSelection={{
             onChange: (_, selectedRows) => {
               setSelectedRows(selectedRows)
@@ -124,10 +219,10 @@ const FinanceTableList = () => {
         visible={uploadModal}
         onCancel={setUploadModal}
         path={'/invoice/finance/upload'}
-        refresh={refresh}
+        actionRef={actionRef}
       />
     </>
   )
 }
 
-export default withTable(FinanceTableList)
+export default FinanceTableList

@@ -3,7 +3,7 @@ import { DatePicker, Checkbox, Button } from 'antd'
 import ProTable from '@ant-design/pro-table'
 import { salaryReport } from '@/api/finance/salary'
 import React, { useRef } from 'react'
-import { downloadUseJson } from '@/utils/request'
+import { download } from '@/utils/request'
 
 function EmployeeSalaryReport() {
   const actionRef = useRef()
@@ -269,7 +269,7 @@ function EmployeeSalaryReport() {
                   .getFieldValue('range')
                   .map((item) => moment(item).format('YYYY-MM-DD HH:mm:ss'))
                 const condition = formRef.current.getFieldValue('condition')
-                downloadUseJson(
+                download(
                   '/report/employee/salary/result',
                   { range: range, condition: condition },
                   '工资统计结果.xlsx'

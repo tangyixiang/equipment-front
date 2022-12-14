@@ -1,5 +1,4 @@
 import React from 'react'
-import styles from './index.module.css'
 import { Layout, Dropdown, Menu, Space, message } from 'antd'
 import { DownOutlined } from '@ant-design/icons'
 import useGlobalStore from '@/store'
