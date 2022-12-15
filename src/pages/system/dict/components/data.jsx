@@ -1,12 +1,12 @@
 import { Button, Modal, message, Form } from 'antd'
-import React, { useState, useEffect } from 'react'
-import { Search, Table, useTable, withTable } from 'table-render'
+import React, { useState, useRef } from 'react'
 import { delData, listData, updateData, addData } from '@/api/system/dict/data'
 import {
   ProFormDigit,
   ProFormText,
   ProFormTextArea,
 } from '@ant-design/pro-form'
+import ProTable from '@ant-design/pro-table'
 
 const handleAdd = async (fields) => {
   const hide = message.loading('正在添加')
@@ -65,22 +65,17 @@ const handleRemoveOne = async (selectedRow) => {
 
 function DictData(props) {
   const [form] = Form.useForm()
-  const { refresh, setTable } = useTable()
+  const actionRef = useRef()
 
   const [currentRow, setCurrentRow] = useState()
   const [modalVisible, setModalVisible] = useState(false)
-
-  // useEffect(() => {
-  //   if (props.values.dictType) {
-  //     refresh({ dictType: props.values.dictType })
-  //   }
-  // }, [props])
 
   const columns = [
     {
       title: '字典排序',
       dataIndex: 'dictSort',
       valueType: 'text',
+      hideInSearch: true,
     },
     {
       title: '字典标签',
@@ -95,6 +90,7 @@ function DictData(props) {
     {
       title: '操作',
       width: '220px',
+      hideInSearch: true,
       render: (_, record) => [
         <Button
           type="link"
@@ -121,7 +117,7 @@ function DictData(props) {
               onOk: async () => {
                 const success = await handleRemoveOne(record)
                 if (success) {
-                  refresh()
+                  actionRef.current?.reload()()
                 }
               },
             })
@@ -133,25 +129,8 @@ function DictData(props) {
     },
   ]
 
-  const searchApi = (params) => {
-    const requestParam = {
-      ...params,
-      pageNum: params.current,
-      dictType: props.values.dictType,
-    }
-    return listData(requestParam).then((res) => {
-      const result = {
-        rows: res.rows,
-        total: res.total,
-        success: true,
-      }
-      return result
-    })
-  }
-
   const handleCancel = () => {
     props.onCancel()
-    setTable({ dataSource: [] })
   }
 
   const handleOk = () => {
@@ -173,7 +152,7 @@ function DictData(props) {
     if (success) {
       setModalVisible(false)
       setCurrentRow(undefined)
-      refresh()
+      actionRef.current?.reload()()
     }
   }
 
@@ -197,12 +176,27 @@ function DictData(props) {
         onCancel={handleCancel}
         footer={null}
       >
-        <Search hidden schema={[]} api={searchApi} displayType="row" />
-        <Table
+        <ProTable
+          actionRef={actionRef}
           columns={columns}
           rowKey="dictCode"
           key="dictDataList"
-          toolbarRender={() => [
+          search={false}
+          request={(params) =>
+            listData({
+              ...params,
+              pageNum: params.current,
+              dictType: props.values.dictType,
+            }).then((res) => {
+              const result = {
+                data: res.rows,
+                total: res.total,
+                success: true,
+              }
+              return result
+            })
+          }
+          toolBarRender={() => [
             <Button
               type="primary"
               key="add"
@@ -315,4 +309,4 @@ function DictData(props) {
   )
 }
 
-export default withTable(DictData)
+export default DictData

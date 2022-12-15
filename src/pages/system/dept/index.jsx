@@ -1,7 +1,6 @@
 import { Button, message, Modal } from 'antd'
 import React, { useState, useRef, useEffect } from 'react'
 import UpdateForm from './components/edit'
-import { Search, Table, useTable, withTable } from 'table-render'
 import {
   addDept,
   updateDept,
@@ -11,23 +10,7 @@ import {
 } from '@/api/system/dept'
 import { getDicts } from '@/api/system/dict/data'
 import { buildTreeData } from '@/utils/common'
-
-const schema = {
-  type: 'object',
-  properties: {
-    deptName: {
-      title: '部门名称',
-      type: 'string',
-      width: '30%',
-    },
-    leader: {
-      title: '负责人',
-      type: 'string',
-      width: '30%',
-    },
-  },
-  labelWidth: 80,
-}
+import ProTable from '@ant-design/pro-table'
 
 /**
  * 添加节点
@@ -119,8 +102,8 @@ const handleRemoveOne = async (selectedRow) => {
   }
 }
 
-function Dept() {
-  const { refresh } = useTable()
+function DeptTableList() {
+  const actionRef = useRef()
 
   const [modalVisible, setModalVisible] = useState(false)
 
@@ -152,6 +135,7 @@ function Dept() {
       title: '显示顺序',
       dataIndex: 'orderNum',
       valueType: 'text',
+      hideInSearch: true,
     },
     {
       title: '负责人',
@@ -162,21 +146,25 @@ function Dept() {
       title: '联系电话',
       dataIndex: 'phone',
       valueType: 'text',
+      hideInSearch: true,
     },
     {
       title: '邮箱',
       dataIndex: 'email',
       valueType: 'text',
+      hideInSearch: true,
     },
     {
       title: '部门状态',
       dataIndex: 'status',
       valueType: 'select',
       valueEnum: statusOptions,
+      hideInSearch: true,
     },
     {
       title: '操作',
       width: '220px',
+      hideInSearch: true,
       render: (_, record) => [
         <Button
           type="link"
@@ -231,7 +219,7 @@ function Dept() {
               onOk: async () => {
                 const success = await handleRemoveOne(record)
                 if (success) {
-                  refresh()
+                  actionRef.current?.reload()()
                 }
               },
             })
@@ -243,68 +231,64 @@ function Dept() {
     },
   ]
 
-  const searchApi = (params) => {
-    return listDept({ ...params }).then((res) => {
-      return {
-        rows: buildTreeData(res.data, 'deptId', '', '', '', ''),
-        total: res.data.length,
-        success: true,
-      }
-    })
-  }
-
   return (
     <>
-      <div style={{ width: '100%', float: 'right' }}>
-        <Search schema={schema} api={searchApi} displayType="row" />
-        <Table
-          rowKey="deptId"
-          key="deptList"
-          toolbarRender={() => [
-            <Button
-              type="primary"
-              key="add"
-              // hidden={!access.hasPerms('system:dept:add')}
-              onClick={async () => {
-                listDept().then((res) => {
-                  if (res.code === 200) {
-                    setDeptTree(
-                      buildTreeData(res.data, 'deptId', 'deptName', '', '', '')
-                    )
-                    setCurrentRow(undefined)
-                    setModalVisible(true)
-                  } else {
-                    message.warn(res.msg)
-                  }
-                })
-              }}
-            >
-              新建
-            </Button>,
-            <Button
-              type="primary"
-              key="remove"
-              danger
-              // hidden={selectedRowsState?.length === 0 || !access.hasPerms('system:dept:remove')}
-              onClick={async () => {
-                const success = await handleRemove(selectedRowsState)
-                if (success) {
-                  setSelectedRows([])
-                  refresh()
+      <ProTable
+        rowKey="deptId"
+        key="deptList"
+        columns={columns}
+        request={(params) =>
+          listDept({ ...params }).then((res) => {
+            return {
+              data: buildTreeData(res.data, 'deptId', '', '', '', ''),
+              total: res.data.length,
+              success: true,
+            }
+          })
+        }
+        toolBarRender={() => [
+          <Button
+            type="primary"
+            key="add"
+            // hidden={!access.hasPerms('system:dept:add')}
+            onClick={async () => {
+              listDept().then((res) => {
+                if (res.code === 200) {
+                  setDeptTree(
+                    buildTreeData(res.data, 'deptId', 'deptName', '', '', '')
+                  )
+                  setCurrentRow(undefined)
+                  setModalVisible(true)
+                } else {
+                  message.warn(res.msg)
                 }
-              }}
-            >
-              批量删除
-            </Button>,
-          ]}
-          columns={columns}
-          rowSelection={{
-            onChange: (_, selectedRows) => {
-              setSelectedRows(selectedRows)
-            },
-          }}
-        />
-      </div>
+              })
+            }}
+          >
+            新建
+          </Button>,
+          <Button
+            type="primary"
+            key="remove"
+            danger
+            // hidden={selectedRowsState?.length === 0 || !access.hasPerms('system:dept:remove')}
+            onClick={async () => {
+              const success = await handleRemove(selectedRowsState)
+              if (success) {
+                setSelectedRows([])
+                actionRef.current?.reload()()
+              }
+            }}
+          >
+            批量删除
+          </Button>,
+        ]}
+        rowSelection={{
+          onChange: (_, selectedRows) => {
+            setSelectedRows(selectedRows)
+          },
+        }}
+      />
       <UpdateForm
         onSubmit={async (values) => {
           let success = false
@@ -316,7 +300,7 @@ function Dept() {
           if (success) {
             setModalVisible(false)
             setCurrentRow(undefined)
-            refresh()
+            actionRef.current?.reload()()
           }
         }}
         onCancel={() => {
@@ -332,4 +316,4 @@ function Dept() {
   )
 }
 
-export default withTable(Dept)
+export default DeptTableList

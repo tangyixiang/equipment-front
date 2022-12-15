@@ -1,7 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react'
 import { Card, Col, Row, Button, Modal, message } from 'antd'
 import DeptTree from './components/DeptTree'
-import { Search, Table, useTable, withTable } from 'table-render'
 import UpdateForm from './components/edit'
 import {
   getUser,
@@ -15,28 +14,7 @@ import { getDeptTreeList } from '@/api/system/dept'
 import { getDicts } from '@/api/system/dict/data'
 import { listPost } from '@/api/system/post'
 import { listRole } from '@/api/system/role'
-
-const schema = {
-  type: 'object',
-  properties: {
-    deptId: {
-      title: '部门ID',
-      type: 'string',
-      width: '25%',
-    },
-    userName: {
-      title: '用户账号',
-      type: 'string',
-      width: '25%',
-    },
-    nickName: {
-      title: '用户名称',
-      type: 'string',
-      width: '25%',
-    },
-  },
-  labelWidth: 80,
-}
+import ProTable from '@ant-design/pro-table'
 
 /**
  * 添加节点
@@ -83,13 +61,11 @@ const handleUpdate = async (fields) => {
   }
 }
 
-function User() {
-  const { refresh, tableState, setTable } = useTable()
+function UserTableList() {
+  const actionRef = useRef()
+  const formTableRef = useRef()
 
   const [modalVisible, setModalVisible] = useState(false)
-  const [resetPwdModalVisible, setResetPwdModalVisible] = useState(false)
-
-  const actionRef = useRef()
   const [currentRow, setCurrentRow] = useState()
   const [selectedRowsState, setSelectedRows] = useState([])
 
@@ -152,11 +128,13 @@ function User() {
       title: '用户邮箱',
       dataIndex: 'email',
       valueType: 'text',
+      hideInSearch: true,
     },
     {
       title: '手机号码',
       dataIndex: 'phonenumber',
       valueType: 'text',
+      hideInSearch: true,
     },
     {
       title: '帐号状态',
@@ -167,6 +145,7 @@ function User() {
     {
       title: '操作',
       width: '220px',
+      hideInSearch: true,
       render: (_, record) => [
         <Button
           type="link"
@@ -221,7 +200,7 @@ function User() {
               onOk: async () => {
                 const success = await handleRemoveOne(record)
                 if (success) {
-                  refresh()
+                  actionRef.current?.reload()
                 }
               },
             })
@@ -268,30 +247,6 @@ function User() {
     }
   }
 
-  const searchApi = (params) => {
-    const requestParams = {
-      ...params,
-      pageNum: params.current,
-    }
-    // console.log('params >>> ', requestParams)
-    return listUser(requestParams)
-      .then((res) => {
-        return {
-          rows: res.rows,
-          total: res.total,
-          extraData: res.code,
-        }
-      })
-      .catch((e) => {
-        console.log('Oops, error', e)
-        // 注意一定要返回 rows 和 total
-        return {
-          rows: [],
-          total: 0,
-        }
-      })
-  }
-
   return (
     <>
       <Row gutter={[16, 24]}>
@@ -300,24 +255,36 @@ function User() {
             <DeptTree
               onSelect={async (value) => {
                 setSelectDept(value)
-                refresh({}, { deptId: value.id })
+                if (actionRef.current) {
+                  formTableRef?.current?.submit()
+                }
               }}
             />
           </Card>
         </Col>
         <Col lg={18} md={24}>
-          <Search schema={schema} displayType="row" api={searchApi} />
-          <Table
+          <ProTable
+            actionRef={actionRef}
+            formRef={formTableRef}
             columns={columns}
             rowKey="userId"
             key="userList"
+            request={(params) =>
+              listUser({ ...params, pageNum: params.current }).then((res) => {
+                return {
+                  data: res.rows,
+                  total: res.total,
+                  extraData: res.code,
+                }
+              })
+            }
             pagination={{
+              defaultPageSize: 10,
               showQuickJumper: true,
               showSizeChanger: true,
               showTotal: (total) => `总共 ${total} 条`,
             }}
-            toolbarAction
-            toolbarRender={() => [
+            toolBarRender={() => [
               <Button
                 key="primary"
                 type="primary"
@@ -374,7 +341,7 @@ function User() {
           if (success) {
             setModalVisible(false)
             setCurrentRow(undefined)
-            refresh()
+            actionRef.current?.reload()
           }
         }}
         onCancel={() => {
@@ -395,4 +362,4 @@ function User() {
   )
 }
 
-export default withTable(User)
+export default UserTableList

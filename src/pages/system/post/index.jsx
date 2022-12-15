@@ -1,33 +1,9 @@
 import { Button, message, Modal } from 'antd'
 import React, { useState, useRef, useEffect } from 'react'
 import UpdateForm from './components/edit'
-import { Search, Table, useTable, withTable } from 'table-render'
-import {
-  addPost,
-  updatePost,
-  delPost,
-  listDeptExcludeChild,
-  listPost,
-} from '@/api/system/post'
+import { addPost, updatePost, delPost, listPost } from '@/api/system/post'
 import { getDicts } from '@/api/system/dict/data'
-import { buildTreeData } from '@/utils/common'
-
-const schema = {
-  type: 'object',
-  properties: {
-    postCode: {
-      title: '岗位编码',
-      type: 'string',
-      width: '30%',
-    },
-    postName: {
-      title: '岗位名称',
-      type: 'string',
-      width: '30%',
-    },
-  },
-  labelWidth: 120,
-}
+import ProTable from '@ant-design/pro-table'
 
 /**
  * 添加节点
@@ -120,13 +96,11 @@ const handleRemoveOne = async (selectedRow) => {
 }
 
 function Post() {
-  const { refresh } = useTable()
+  const actionRef = useRef()
 
   const [modalVisible, setModalVisible] = useState(false)
-
   const [currentRow, setCurrentRow] = useState()
   const [selectedRowsState, setSelectedRows] = useState([])
-
   const [statusOptions, setStatusOptions] = useState([])
 
   useEffect(() => {
@@ -156,21 +130,24 @@ function Post() {
       title: '显示顺序',
       dataIndex: 'postSort',
       valueType: 'text',
+      hideInSearch: true,
     },
     {
       title: '状态',
       dataIndex: 'status',
       valueType: 'select',
-      enum: statusOptions,
+      valueEnum: statusOptions,
     },
     {
       title: '备注',
       dataIndex: 'remark',
       valueType: 'textarea',
+      hideInSearch: true,
     },
     {
       title: '操作',
       width: '220px',
+      hideInSearch: true,
       render: (_, record) => [
         <Button
           type="link"
@@ -199,7 +176,7 @@ function Post() {
               onOk: async () => {
                 const success = await handleRemoveOne(record)
                 if (success) {
-                  refresh()
+                  actionRef.current?.reload()()
                 }
               },
             })
@@ -211,64 +188,61 @@ function Post() {
     },
   ]
 
-  const searchApi = (params) => {
-    return listPost({ ...params }).then((res) => {
-      return {
-        rows: res.rows,
-        total: res.total,
-        success: true,
-      }
-    })
-  }
-
   return (
     <>
-      <div style={{ width: '100%', float: 'right' }}>
-        <Search schema={schema} api={searchApi} displayType="row" />
-        <Table
-          rowKey="postId"
-          key="postList"
-          pagination={{
-            showQuickJumper: true,
-            showSizeChanger: true,
-            showTotal: (total) => `总共 ${total} 条`,
-          }}
-          toolbarRender={() => [
-            <Button
-              type="primary"
-              key="add"
-              // hidden={!access.hasPerms('system:post:add')}
-              onClick={async () => {
-                setCurrentRow(undefined)
-                setModalVisible(true)
-              }}
-            >
-              新建
-            </Button>,
-            <Button
-              type="primary"
-              key="remove"
-              danger
-              // hidden={selectedRowsState?.length === 0 || !access.hasPerms('system:post:remove')}
-              onClick={async () => {
-                const success = await handleRemove(selectedRowsState)
-                if (success) {
-                  setSelectedRows([])
-                  refresh()
-                }
-              }}
-            >
-              批量删除
-            </Button>,
-          ]}
-          columns={columns}
-          rowSelection={{
-            onChange: (_, selectedRows) => {
-              setSelectedRows(selectedRows)
-            },
-          }}
-        />
-      </div>
+      <ProTable
+        rowKey="postId"
+        key="postList"
+        request={(params) =>
+          listPost({ ...params }).then((res) => {
+            return {
+              data: res.rows,
+              total: res.total,
+              success: true,
+            }
+          })
+        }
+        pagination={{
+          defaultPageSize: 10,
+          showQuickJumper: true,
+          showSizeChanger: true,
+          showTotal: (total) => `总共 ${total} 条`,
+        }}
+        toolBarRender={() => [
+          <Button
+            type="primary"
+            key="add"
+            // hidden={!access.hasPerms('system:post:add')}
+            onClick={async () => {
+              setCurrentRow(undefined)
+              setModalVisible(true)
+            }}
+          >
+            新建
+          </Button>,
+          <Button
+            type="primary"
+            key="remove"
+            danger
+            // hidden={selectedRowsState?.length === 0 || !access.hasPerms('system:post:remove')}
+            onClick={async () => {
+              const success = await handleRemove(selectedRowsState)
+              if (success) {
+                setSelectedRows([])
+                actionRef.current?.reload()()
+              }
+            }}
+          >
+            批量删除
+          </Button>,
+        ]}
+        columns={columns}
+        rowSelection={{
+          onChange: (_, selectedRows) => {
+            setSelectedRows(selectedRows)
+          },
+        }}
+      />
       <UpdateForm
         onSubmit={async (values) => {
           let success = false
@@ -280,7 +254,7 @@ function Post() {
           if (success) {
             setModalVisible(false)
             setCurrentRow(undefined)
-            refresh()
+            actionRef.current?.reload()()
           }
         }}
         onCancel={() => {
@@ -295,4 +269,4 @@ function Post() {
   )
 }
 
-export default withTable(Post)
+export default Post

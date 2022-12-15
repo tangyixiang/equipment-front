@@ -1,28 +1,10 @@
 import { Button, message, Modal } from 'antd'
 import React, { useState, useRef, useEffect } from 'react'
-import { Search, Table, useTable, withTable } from 'table-render'
-
 import UpdateForm from './components/edit'
 import { getDicts } from '@/api/system/dict/data'
 import { addRole, updateRole, delRole, listRole } from '@/api/system/role'
 import { getRoleMenuList, treeselect } from '@/api/system/menu'
-
-const schema = {
-  type: 'object',
-  properties: {
-    roleName: {
-      title: '角色名称',
-      type: 'string',
-      width: '25%',
-    },
-    roleKey: {
-      title: '角色权限字符串',
-      type: 'string',
-      width: '25%',
-    },
-  },
-  labelWidth: 120,
-}
+import ProTable from '@ant-design/pro-table'
 
 function formatTreeSelectData(arrayList) {
   const treeSelectData = arrayList.map((item) => {
@@ -130,37 +112,12 @@ const handleRemoveOne = async (selectedRow) => {
   }
 }
 
-const searchApi = (params) => {
-  const requestParams = {
-    ...params,
-    pageNum: params.current,
-  }
-  // console.log('params >>> ', requestParams)
-
-  return listRole(requestParams)
-    .then((res) => {
-      return {
-        rows: res.rows,
-        total: res.total,
-        extraData: res.code,
-      }
-    })
-    .catch((e) => {
-      return {
-        rows: [],
-        total: 0,
-      }
-    })
-}
-
-function Role() {
-  const { refresh, tableState, setTable } = useTable()
-  const [modalVisible, setModalVisible] = useState(false)
-
+function RoleTableList() {
   const actionRef = useRef()
+
+  const [modalVisible, setModalVisible] = useState(false)
   const [currentRow, setCurrentRow] = useState()
   const [selectedRowsState, setSelectedRows] = useState([])
-
   const [statusOptions, setStatusOptions] = useState([])
 
   const [menuTree, setMenuTree] = useState()
@@ -183,6 +140,7 @@ function Role() {
       title: '角色ID',
       dataIndex: 'roleId',
       valueType: 'text',
+      hideInSearch: true,
     },
     {
       title: '角色名称',
@@ -198,17 +156,19 @@ function Role() {
       title: '显示顺序',
       dataIndex: 'roleSort',
       valueType: 'text',
+      hideInSearch: true,
     },
     {
       title: '角色状态',
       dataIndex: 'status',
       valueType: 'select',
-      enum: statusOptions,
+      valueEnum: statusOptions,
     },
     {
       title: '创建时间',
       dataIndex: 'createTime',
       valueType: 'dateRange',
+      hideInSearch: true,
       render: (_, record) => <span>{record.createTime}</span>,
       search: {
         transform: (value) => {
@@ -223,10 +183,12 @@ function Role() {
       title: '备注',
       dataIndex: 'remark',
       valueType: 'text',
+      hideInSearch: true,
     },
     {
       title: '操作',
       width: '220px',
+      hideInSearch: true,
       render: (_, record) => [
         <Button
           type="link"
@@ -280,64 +242,67 @@ function Role() {
 
   return (
     <>
-      <div style={{ width: '100%', float: 'right' }}>
-        <Search schema={schema} displayType="row" api={searchApi} />
-        <Table
-          rowKey="roleId"
-          key="roleList"
-          pagination={{
-            showQuickJumper: true,
-            showSizeChanger: true,
-            showTotal: (total) => `总共 ${total} 条`,
-          }}
-          toolbarRender={() => [
-            <Button
-              type="primary"
-              key="add"
-              // hidden={!access.hasPerms('system:role:add')}
-              onClick={async () => {
-                treeselect().then((res) => {
-                  if (res.code === 200) {
-                    const treeData = formatTreeSelectData(res.data)
-                    setMenuTree(treeData)
-                    setMenuIds([])
-                    setModalVisible(true)
-                    setCurrentRow(undefined)
-                  } else {
-                    message.warn(res.msg)
-                  }
-                })
-              }}
-            >
-              新建
-            </Button>,
-            <Button
-              type="primary"
-              key="remove"
-              danger
-              // hidden={
-              //   selectedRowsState?.length === 0 ||
-              //   !access.hasPerms('system:role:remove')
-              // }
-              onClick={async () => {
-                const success = await handleRemove(selectedRowsState)
-                if (success) {
-                  setSelectedRows([])
-                  refresh({ stay: true })
+      <ProTable
+        actionRef={actionRef}
+        rowKey="roleId"
+        key="roleList"
+        columns={columns}
+        request={(params) =>
+          listRole({ ...params, pageNum: params.current }).then((res) => {
+            return {
+              data: res.rows,
+              total: res.total,
+              success: true,
+            }
+          })
+        }
+        pagination={{
+          defaultPageSize: 10,
+          showQuickJumper: true,
+          showSizeChanger: true,
+          showTotal: (total) => `总共 ${total} 条`,
+        }}
+        toolBarRender={() => [
+          <Button
+            type="primary"
+            key="add"
+            onClick={async () => {
+              treeselect().then((res) => {
+                if (res.code === 200) {
+                  const treeData = formatTreeSelectData(res.data)
+                  setMenuTree(treeData)
+                  setMenuIds([])
+                  setModalVisible(true)
+                  setCurrentRow(undefined)
+                } else {
+                  message.warn(res.msg)
                 }
-              }}
-            >
-              批量删除
-            </Button>,
-          ]}
-          columns={columns}
-          rowSelection={{
-            onChange: (_, selectedRows) => {
-              setSelectedRows(selectedRows)
-            },
-          }}
-        />
-      </div>
+              })
+            }}
+          >
+            新建
+          </Button>,
+          <Button
+            type="primary"
+            key="remove"
+            danger
+            onClick={async () => {
+              const success = await handleRemove(selectedRowsState)
+              if (success) {
+                setSelectedRows([])
+                actionRef.current?.reload()
+              }
+            }}
+          >
+            批量删除
+          </Button>,
+        ]}
+        rowSelection={{
+          onChange: (_, selectedRows) => {
+            setSelectedRows(selectedRows)
+          },
+        }}
+      />
       <UpdateForm
         onSubmit={async (values) => {
           let success = false
@@ -368,4 +333,4 @@ function Role() {
   )
 }
 
-export default withTable(Role)
+export default RoleTableList

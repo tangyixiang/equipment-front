@@ -1,7 +1,6 @@
 import { Button, message, Modal } from 'antd'
 import React, { useState, useRef, useEffect } from 'react'
 import UpdateForm from './components/edit'
-import { Search, Table, useTable, withTable } from 'table-render'
 import {
   addNotice,
   updateNotice,
@@ -9,31 +8,7 @@ import {
   listNotice,
 } from '@/api/system/notice'
 import { getDicts } from '@/api/system/dict/data'
-
-const schema = {
-  type: 'object',
-  properties: {
-    noticeTitle: {
-      title: '公告标题',
-      type: 'string',
-      width: '25%',
-    },
-    createBy: {
-      title: '创建者',
-      type: 'string',
-      width: '25%',
-    },
-    noticeType: {
-      title: '公告类型',
-      type: 'string',
-      enum: ['1', '2'],
-      enumNames: ['通知', '公告'],
-      width: '25%',
-      widget: 'select',
-    },
-  },
-  labelWidth: 80,
-}
+import ProTable from '@ant-design/pro-table'
 
 const handleAdd = async (fields) => {
   const hide = message.loading('正在添加')
@@ -113,10 +88,9 @@ const handleRemoveOne = async (selectedRow) => {
 }
 
 const Notice = () => {
-  const { refresh } = useTable()
+  const actionRef = useRef()
 
   const [modalVisible, setModalVisible] = useState(false)
-
   const [currentRow, setCurrentRow] = useState()
   const [selectedRowsState, setSelectedRows] = useState([])
 
@@ -149,6 +123,7 @@ const Notice = () => {
       title: '公告ID',
       dataIndex: 'noticeId',
       valueType: 'text',
+      hideInSearch: true,
     },
     {
       title: '公告标题',
@@ -159,18 +134,19 @@ const Notice = () => {
       title: '公告类型',
       dataIndex: 'noticeType',
       valueType: 'select',
-      enum: noticeTypeOptions,
+      valueEnum: noticeTypeOptions,
     },
     {
       title: '公告状态',
       dataIndex: 'status',
       valueType: 'select',
-      enum: statusOptions,
+      valueEnum: statusOptions,
     },
     {
       title: '创建者',
       dataIndex: 'createBy',
       valueType: 'text',
+      hideInSearch: true,
     },
     {
       title: '创建时间',
@@ -180,6 +156,7 @@ const Notice = () => {
     {
       title: '操作',
       width: '220px',
+      hideInSearch: true,
       render: (_, record) => [
         <Button
           type="link"
@@ -208,7 +185,7 @@ const Notice = () => {
               onOk: async () => {
                 const success = await handleRemoveOne(record)
                 if (success) {
-                  refresh()
+                  actionRef.current?.reload()()
                 }
               },
             })
@@ -220,69 +197,62 @@ const Notice = () => {
     },
   ]
 
-  const searchApi = (params) => {
-    const requestParams = {
-      ...params,
-      pageNum: params.current,
-    }
-    return listNotice(requestParams).then((res) => {
-      const result = {
-        rows: res.rows,
-        total: res.total,
-        success: true,
-      }
-      return result
-    })
-  }
-
   return (
     <>
-      <div style={{ width: '100%', float: 'right' }}>
-        <Search schema={schema} api={searchApi} displayType="row" />
-        <Table
-          headerTitle={'信息'}
-          rowKey="noticeId"
-          key="noticeList"
-          pagination={{
-            showQuickJumper: true,
-            showSizeChanger: true,
-            showTotal: (total) => `总共 ${total} 条`,
-          }}
-          toolbarRender={() => [
-            <Button
-              type="primary"
-              key="add"
-              // hidden={!access.hasPerms('system:notice:add')}
-              onClick={async () => {
-                setCurrentRow(undefined)
-                setModalVisible(true)
-              }}
-            >
-              新建
-            </Button>,
-            <Button
-              type="primary"
-              key="remove"
-              // hidden={selectedRowsState?.length === 0 || !access.hasPerms('system:notice:remove')}
-              onClick={async () => {
-                const success = await handleRemove(selectedRowsState)
-                if (success) {
-                  setSelectedRows([])
-                  refresh()
-                }
-              }}
-            >
-              删除
-            </Button>,
-          ]}
-          columns={columns}
-          rowSelection={{
-            onChange: (_, selectedRows) => {
-              setSelectedRows(selectedRows)
-            },
-          }}
-        />
-      </div>
+      <ProTable
+        headerTitle={'信息'}
+        rowKey="noticeId"
+        key="noticeList"
+        columns={columns}
+        request={(params) =>
+          listNotice({ ...params, pageNum: params.current }).then((res) => {
+            const result = {
+              data: res.rows,
+              total: res.total,
+              success: true,
+            }
+            return result
+          })
+        }
+        pagination={{
+          defaultPageSize: 10,
+          showQuickJumper: true,
+          showSizeChanger: true,
+          showTotal: (total) => `总共 ${total} 条`,
+        }}
+        toolBarRender={() => [
+          <Button
+            type="primary"
+            key="add"
+            // hidden={!access.hasPerms('system:notice:add')}
+            onClick={async () => {
+              setCurrentRow(undefined)
+              setModalVisible(true)
+            }}
+          >
+            新建
+          </Button>,
+          <Button
+            type="primary"
+            key="remove"
+            // hidden={selectedRowsState?.length === 0 || !access.hasPerms('system:notice:remove')}
+            onClick={async () => {
+              const success = await handleRemove(selectedRowsState)
+              if (success) {
+                setSelectedRows([])
+                actionRef.current?.reload()()
+              }
+            }}
+          >
+            删除
+          </Button>,
+        ]}
+        rowSelection={{
+          onChange: (_, selectedRows) => {
+            setSelectedRows(selectedRows)
+          },
+        }}
+      />
       <UpdateForm
         onSubmit={async (values) => {
           let success = false
@@ -294,7 +264,7 @@ const Notice = () => {
           if (success) {
             setModalVisible(false)
             setCurrentRow(undefined)
-            refresh()
+            actionRef.current?.reload()()
           }
         }}
         onCancel={() => {
@@ -310,4 +280,4 @@ const Notice = () => {
   )
 }
 
-export default withTable(Notice)
+export default Notice

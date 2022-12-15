@@ -1,15 +1,14 @@
 import { Button, message, Modal } from 'antd'
-import React, { useState, useEffect } from 'react'
-import { Search, Table, useTable, withTable } from 'table-render'
+import React, { useState, useRef } from 'react'
 import {
   listContract,
   addContract,
   updateContract,
   delContract,
 } from '@/api/examine/contract'
-import { getDicts } from '@/api/system/dict/data'
 import ContractInfo from './components/ContractInfo'
 import { useNavigate } from 'react-router-dom'
+import ProTable from '@ant-design/pro-table'
 
 const schema = {
   type: 'object',
@@ -147,7 +146,7 @@ const handleRemoveOne = async (selectedRow) => {
 }
 
 const ContractTableList = () => {
-  const { refresh } = useTable()
+  const actionRef = useRef()
   const [modalVisible, setModalVisible] = useState(false)
   const [readOnly, setReadOnly] = useState(false)
   let navigate = useNavigate()
@@ -254,7 +253,7 @@ const ContractTableList = () => {
               onOk: async () => {
                 const success = await handleRemoveOne(record)
                 if (success) {
-                  refresh()
+                  actionRef.current?.reload()
                 }
               },
             })
@@ -266,77 +265,67 @@ const ContractTableList = () => {
     },
   ]
 
-  const searchApi = (params) => {
-    const requestParams = {
-      ...params,
-      pageNum: params.current,
-    }
-    // console.log('params >>> ', requestParams)
-
-    return listContract(requestParams).then((res) => {
-      const result = {
-        rows: res.rows,
-        total: res.total,
-        success: true,
-      }
-      return result
-    })
-  }
-
   return (
     <>
-      <div style={{ width: '100%', float: 'right' }}>
-        <Search schema={schema} api={searchApi} displayType="row" />
-        <Table
-          rowKey="id"
-          key="companyCarList"
-          pagination={{
-            showQuickJumper: true,
-            showSizeChanger: true,
-            showTotal: (total) => `总共 ${total} 条`,
-          }}
-          toolbarRender={() => [
-            <Button
-              type="primary"
-              key="add"
-              // hidden={!access.hasPerms('system:dictType:add')}
-              onClick={async () => {
-                setModalVisible(true)
-                setReadOnly(false)
-                setCurrentRow(undefined)
-                navigate('/examine/contract/info', {
-                  state: { title: '合同新增' },
-                })
-              }}
-            >
-              新建
-            </Button>,
-            <Button
-              type="primary"
-              key="remove"
-              danger
-              // hidden={selectedRowsState?.length === 0 || !access.hasPerms('system:dictType:remove')}
-              onClick={async () => {
-                const success = await handleRemove(selectedRowsState)
-                if (success) {
-                  setSelectedRows([])
-                  refresh()
-                }
-              }}
-            >
-              批量删除
-            </Button>,
-          ]}
-          columns={columns}
-          rowSelection={{
-            onChange: (_, selectedRows) => {
-              setSelectedRows(selectedRows)
-            },
-          }}
-        />
-      </div>
+      <ProTable
+        rowKey="id"
+        key="companyCarList"
+        columns={columns}
+        request={(params) =>
+          listContract({ ...params, pageNum: params.current }).then((res) => {
+            return {
+              data: res.rows,
+              total: res.total,
+              success: true,
+            }
+          })
+        }
+        pagination={{
+          defaultPageSize: 10,
+          showQuickJumper: true,
+          showSizeChanger: true,
+          showTotal: (total) => `总共 ${total} 条`,
+        }}
+        toolBarRender={() => [
+          <Button
+            type="primary"
+            key="add"
+            // hidden={!access.hasPerms('system:dictType:add')}
+            onClick={async () => {
+              setModalVisible(true)
+              setReadOnly(false)
+              setCurrentRow(undefined)
+              navigate('/examine/contract/info', {
+                state: { title: '合同新增' },
+              })
+            }}
+          >
+            新建
+          </Button>,
+          <Button
+            type="primary"
+            key="remove"
+            danger
+            // hidden={selectedRowsState?.length === 0 || !access.hasPerms('system:dictType:remove')}
+            onClick={async () => {
+              const success = await handleRemove(selectedRowsState)
+              if (success) {
+                setSelectedRows([])
+                actionRef.current?.reload()
+              }
+            }}
+          >
+            批量删除
+          </Button>,
+        ]}
+        rowSelection={{
+          onChange: (_, selectedRows) => {
+            setSelectedRows(selectedRows)
+          },
+        }}
+      />
     </>
   )
 }
 
-export default withTable(ContractTableList)
+export default ContractTableList

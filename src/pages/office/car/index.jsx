@@ -1,10 +1,9 @@
 import { Button, message, Modal } from 'antd'
 import React, { useState, useEffect } from 'react'
 import CardInfo from './components/edit'
-import { Search, Table, useTable, withTable } from 'table-render'
 import { listCar, addCar, updateCar, delCar } from '@/api/office/car'
-import { getDicts } from '@/api/system/dict/data'
-import history from '@/utils/history'
+import ProTable from '@ant-design/pro-table'
+import { useRef } from 'react'
 
 const schema = {
   type: 'object',
@@ -138,14 +137,12 @@ const handleRemoveOne = async (selectedRow) => {
 }
 
 const CarTableList = () => {
-  const { refresh } = useTable()
+  const actionRef = useRef()
   const [modalVisible, setModalVisible] = useState(false)
   const [readOnly, setReadOnly] = useState(false)
 
   const [currentRow, setCurrentRow] = useState()
   const [selectedRowsState, setSelectedRows] = useState([])
-
-  const [statusOptions, setStatusOptions] = useState([])
 
   useEffect(() => {}, [])
 
@@ -195,11 +192,6 @@ const CarTableList = () => {
         3: '报废',
       },
     },
-    // {
-    //   title: '操作人',
-    //   dataIndex: 'updateBy',
-    //   valueType: 'text',
-    // },
     {
       title: '操作时间',
       dataIndex: 'updateTime',
@@ -213,7 +205,6 @@ const CarTableList = () => {
           type="link"
           size="small"
           key="edit"
-          // hidden={!access.hasPerms('system:dictType:edit')}
           onClick={() => {
             setModalVisible(true)
             setReadOnly(false)
@@ -226,7 +217,6 @@ const CarTableList = () => {
           type="link"
           size="small"
           key="editData"
-          // hidden={!access.hasPerms('system:dictType:edit')}
           onClick={() => {
             setModalVisible(true)
             setReadOnly(true)
@@ -240,7 +230,6 @@ const CarTableList = () => {
           size="small"
           danger
           key="batchRemove"
-          // hidden={!access.hasPerms('system:dictType:remove')}
           onClick={async () => {
             Modal.confirm({
               title: '删除',
@@ -250,7 +239,7 @@ const CarTableList = () => {
               onOk: async () => {
                 const success = await handleRemoveOne(record)
                 if (success) {
-                  refresh()
+                  actionRef.current?.reload()
                 }
               },
             })
@@ -262,68 +251,58 @@ const CarTableList = () => {
     },
   ]
 
-  const searchApi = (params) => {
-    const requestParams = {
-      ...params,
-      pageNum: params.current,
-    }
-    // console.log('params >>> ', requestParams)
-
-    return listCar(requestParams).then((res) => {
-      const result = {
-        rows: res.rows,
-        total: res.total,
-        success: true,
-      }
-      return result
-    })
-  }
-
   return (
     <>
-      <div style={{ width: '100%', float: 'right' }}>
-        <Search schema={schema} api={searchApi} displayType="row" />
-        <Table
-          rowKey="id"
-          key="companyCarList"
-          toolbarRender={() => [
-            <Button
-              type="primary"
-              key="add"
-              // hidden={!access.hasPerms('system:dictType:add')}
-              onClick={async () => {
-                setModalVisible(true)
-                setReadOnly(false)
-                setCurrentRow(undefined)
-                // history.push('/office/car/info')
-              }}
-            >
-              新建
-            </Button>,
-            <Button
-              type="primary"
-              key="remove"
-              danger
-              // hidden={selectedRowsState?.length === 0 || !access.hasPerms('system:dictType:remove')}
-              onClick={async () => {
-                const success = await handleRemove(selectedRowsState)
-                if (success) {
-                  setSelectedRows([])
-                  refresh()
-                }
-              }}
-            >
-              批量删除
-            </Button>,
-          ]}
-          columns={columns}
-          rowSelection={{
-            onChange: (_, selectedRows) => {
-              setSelectedRows(selectedRows)
-            },
-          }}
-        />
-      </div>
+      <ProTable
+        rowKey="id"
+        key="companyCarList"
+        request={(params) =>
+          listCar({ ...params, pageNum: params.current }).then((res) => {
+            const result = {
+              data: res.rows,
+              total: res.total,
+              success: true,
+            }
+            return result
+          })
+        }
+        toolBarRender={() => [
+          <Button
+            type="primary"
+            key="add"
+            // hidden={!access.hasPerms('system:dictType:add')}
+            onClick={async () => {
+              setModalVisible(true)
+              setReadOnly(false)
+              setCurrentRow(undefined)
+              // history.push('/office/car/info')
+            }}
+          >
+            新建
+          </Button>,
+          <Button
+            type="primary"
+            key="remove"
+            danger
+            // hidden={selectedRowsState?.length === 0 || !access.hasPerms('system:dictType:remove')}
+            onClick={async () => {
+              const success = await handleRemove(selectedRowsState)
+              if (success) {
+                setSelectedRows([])
+                actionRef.current?.reload()
+              }
+            }}
+          >
+            批量删除
+          </Button>,
+        ]}
+        columns={columns}
+        rowSelection={{
+          onChange: (_, selectedRows) => {
+            setSelectedRows(selectedRows)
+          },
+        }}
+      />
       <CardInfo
         title={'新增车辆'}
         open={modalVisible}
@@ -340,7 +319,7 @@ const CarTableList = () => {
           if (success) {
             setModalVisible(false)
             setCurrentRow(undefined)
-            refresh()
+            actionRef.current?.reload()
           }
         }}
       />
@@ -348,4 +327,4 @@ const CarTableList = () => {
   )
 }
 
-export default withTable(CarTableList)
+export default CarTableList

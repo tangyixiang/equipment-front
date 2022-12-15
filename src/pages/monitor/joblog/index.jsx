@@ -1,16 +1,12 @@
-import {
-  PlusOutlined,
-  DeleteOutlined,
-  ExclamationCircleOutlined,
-} from '@ant-design/icons'
+import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { Button, message, Modal } from 'antd'
 import React, { useState, useRef, useEffect } from 'react'
 import DetailForm from './components/detail'
 import { getDicts } from '@/api/system/dict/data'
-import { Search, Table, useTable, withTable } from 'table-render'
 import history from '@/utils/history'
 import { delJobLog, cleanJobLog, listJobLog } from '@/api/monitor/jobLog'
 import { useSearchParams } from 'react-router-dom'
+import ProTable from '@ant-design/pro-table'
 
 const handleRemove = async (selectedRows) => {
   const hide = message.loading('正在删除')
@@ -72,11 +68,9 @@ const handleRemoveOne = async (selectedRow) => {
 }
 
 const JobLogTableList = () => {
-  const { refresh } = useTable()
+  const actionRef = useRef()
   const [searchParams, setSearchParams] = useSearchParams()
-
   const [modalVisible, setModalVisible] = useState(false)
-
   const [currentRow, setCurrentRow] = useState()
   const [selectedRowsState, setSelectedRows] = useState([])
 
@@ -120,7 +114,7 @@ const JobLogTableList = () => {
       title: '任务组名',
       dataIndex: 'jobGroup',
       valueType: 'text',
-      enum: jobGroupOptions,
+      valueEnum: jobGroupOptions,
     },
     {
       title: '调用目标字符串',
@@ -138,7 +132,7 @@ const JobLogTableList = () => {
       title: '执行状态',
       dataIndex: 'status',
       valueType: 'select',
-      enum: statusOptions,
+      valueEnum: statusOptions,
     },
     {
       title: '操作',
@@ -171,7 +165,7 @@ const JobLogTableList = () => {
               onOk: async () => {
                 const success = await handleRemoveOne(record)
                 if (success) {
-                  refresh()
+                  actionRef.current?.reload()()
                 }
               },
             })
@@ -183,91 +177,82 @@ const JobLogTableList = () => {
     },
   ]
 
-  const searchApi = (params) => {
-    const requestParams = {
-      ...params,
-      pageNum: params.current,
-      jobName: searchParams.get('jobName'),
-    }
-
-    return listJobLog(requestParams).then((res) => {
-      const result = {
-        rows: res.rows,
-        total: res.total,
-        success: true,
-      }
-      return result
-    })
-  }
-
   return (
     <>
-      <div style={{ width: '100%', float: 'right' }}>
-        <Search schema={[]} hidden api={searchApi} displayType="row" />
-        <Table
-          rowKey="jobLogId"
-          key="jobLogList"
-          toolbarRender={() => [
-            <Button
-              type="primary"
-              danger
-              key="remove"
-              // hidden={selectedRowsState?.length === 0 || !access.hasPerms('monitor:log:remove')}
-              onClick={async () => {
-                Modal.confirm({
-                  title: '是否确认删除所选数据项?',
-                  icon: <ExclamationCircleOutlined />,
-                  content: '请谨慎操作',
-                  async onOk() {
-                    const success = await handleRemove(selectedRowsState)
-                    if (success) {
-                      setSelectedRows([])
-                      refresh()
-                    }
-                  },
-                  onCancel() {},
-                })
-              }}
-            >
-              删除
-            </Button>,
-            <Button
-              type="primary"
-              key="clear"
-              // hidden={!access.hasPerms('monitor:operlog:remove')}
-              onClick={async () => {
-                Modal.confirm({
-                  title: '是否确认清空所有登录日志数据项?',
-                  icon: <ExclamationCircleOutlined />,
-                  content: '请谨慎操作',
-                  async onOk() {
-                    handleRemoveAll()
-                    refresh()
-                  },
-                  onCancel() {},
-                })
-              }}
-            >
-              清空
-            </Button>,
-            <Button
-              type="primary"
-              key="goback"
-              onClick={async () => {
-                history.back()
-              }}
-            >
-              返回
-            </Button>,
-          ]}
-          columns={columns}
-          rowSelection={{
-            onChange: (_, selectedRows) => {
-              setSelectedRows(selectedRows)
-            },
-          }}
-        />
-      </div>
+      <ProTable
+        actionRef={actionRef}
+        rowKey="jobLogId"
+        key="jobLogList"
+        columns={columns}
+        search={null}
+        request={(params) =>
+          listJobLog({ ...params, pageNum: params.current }).then((res) => {
+            const result = {
+              data: res.rows,
+              total: res.total,
+              success: true,
+            }
+            return result
+          })
+        }
+        toolBarRender={() => [
+          <Button
+            type="primary"
+            danger
+            key="remove"
+            onClick={async () => {
+              Modal.confirm({
+                title: '是否确认删除所选数据项?',
+                icon: <ExclamationCircleOutlined />,
+                content: '请谨慎操作',
+                async onOk() {
+                  const success = await handleRemove(selectedRowsState)
+                  if (success) {
+                    setSelectedRows([])
+                    actionRef.current?.reload()()
+                  }
+                },
+                onCancel() {},
+              })
+            }}
+          >
+            删除
+          </Button>,
+          <Button
+            type="primary"
+            key="clear"
+            // hidden={!access.hasPerms('monitor:operlog:remove')}
+            onClick={async () => {
+              Modal.confirm({
+                title: '是否确认清空所有登录日志数据项?',
+                icon: <ExclamationCircleOutlined />,
+                content: '请谨慎操作',
+                async onOk() {
+                  handleRemoveAll()
+                  actionRef.current?.reload()()
+                },
+                onCancel() {},
+              })
+            }}
+          >
+            清空
+          </Button>,
+          <Button
+            type="primary"
+            key="goback"
+            onClick={async () => {
+              history.back()
+            }}
+          >
+            返回
+          </Button>,
+        ]}
+        rowSelection={{
+          onChange: (_, selectedRows) => {
+            setSelectedRows(selectedRows)
+          },
+        }}
+      />
       <DetailForm
         onCancel={() => {
           setModalVisible(false)
@@ -282,4 +267,4 @@ const JobLogTableList = () => {
   )
 }
 
-export default withTable(JobLogTableList)
+export default JobLogTableList

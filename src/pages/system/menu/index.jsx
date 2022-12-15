@@ -1,35 +1,11 @@
 import { Button, message, Modal } from 'antd'
 import React, { useState, useRef, useEffect } from 'react'
 import UpdateForm from './components/edit'
-import { Search, Table, useTable, withTable } from 'table-render'
 import { addMenu, updateMenu, delMenu, listMenu } from '@/api/system/menu'
 import { getDicts } from '@/api/system/dict/data'
 import { createIcon } from '@/utils/IconUtils'
 import { buildTreeData } from '@/utils/common'
-
-const schema = {
-  type: 'object',
-  properties: {
-    menuName: {
-      title: '菜单名称',
-      type: 'string',
-      width: '25%',
-    },
-    perms: {
-      title: '权限标识',
-      type: 'string',
-      width: '25%',
-    },
-    menuType: {
-      title: '菜单类型',
-      type: 'string',
-      enum: ['M', 'C', 'F'],
-      enumNames: ['目录', '菜单', '按钮'],
-      width: '25%',
-    },
-  },
-  labelWidth: 80,
-}
+import ProTable from '@ant-design/pro-table'
 
 /**
  * 添加节点
@@ -121,11 +97,10 @@ const handleRemoveOne = async (selectedRow) => {
   }
 }
 
-function Menu() {
-  const { refresh } = useTable()
+function MenuTableList() {
+  const actionRef = useRef()
 
   const [modalVisible, setModalVisible] = useState(false)
-
   const [currentRow, setCurrentRow] = useState()
   const [selectedRowsState, setSelectedRows] = useState([])
 
@@ -164,6 +139,7 @@ function Menu() {
       title: '菜单图标',
       dataIndex: 'icon',
       valueType: 'text',
+      hideInSearch: true,
       render: (text) => createIcon(text),
     },
     {
@@ -193,22 +169,22 @@ function Menu() {
       title: '菜单类型',
       dataIndex: 'menuType',
       valueType: 'select',
-      enum: {
+      valueEnum: {
         M: '目录',
         C: '菜单',
         F: '按钮',
       },
-      hideInTable: true,
     },
     {
       title: '菜单状态',
       dataIndex: 'status',
       valueType: 'select',
-      enum: statusOptions,
+      valueEnum: statusOptions,
     },
     {
       title: '操作',
       width: '220px',
+      hideInSearch: true,
       render: (_, record) => [
         <Button
           type="link"
@@ -237,7 +213,7 @@ function Menu() {
               onOk: async () => {
                 const success = await handleRemoveOne(record)
                 if (success) {
-                  refresh()
+                  actionRef.current?.reload()()
                 }
               },
             })
@@ -250,64 +226,71 @@ function Menu() {
   ]
 
   const searchApi = (params) => {
-    return listMenu(params).then((res) => {
-      const menu = { id: 0, label: '主类目', children: [], value: 0 }
-      const memuData = buildTreeData(res.data, 'menuId', 'menuName', '', '', '')
-      menu.children = memuData
-      const treeData = []
-      treeData.push(menu)
-      setMenuTree(treeData)
-      return {
-        rows: memuData,
-        total: 0,
-        success: true,
-      }
-    })
+    return
   }
 
   return (
     <>
-      <div style={{ width: '100%', float: 'right' }}>
-        <Search schema={schema} api={searchApi} displayType="row" />
-        <Table
-          rowKey="menuId"
-          key="menuList"
-          toolbarRender={() => [
-            <Button
-              type="primary"
-              key="add"
-              // hidden={!access.hasPerms('system:menu:add')}
-              onClick={async () => {
-                setCurrentRow(undefined)
-                setModalVisible(true)
-              }}
-            >
-              新建
-            </Button>,
-            <Button
-              type="primary"
-              key="remove"
-              danger
-              // hidden={selectedRowsState?.length === 0 || !access.hasPerms('system:menu:remove')}
-              onClick={async () => {
-                const success = await handleRemove(selectedRowsState)
-                if (success) {
-                  setSelectedRows([])
-                  refresh()
-                }
-              }}
-            >
-              批量删除
-            </Button>,
-          ]}
-          columns={columns}
-          rowSelection={{
-            onChange: (_, selectedRows) => {
-              setSelectedRows(selectedRows)
-            },
-          }}
-        />
-      </div>
+      <ProTable
+        rowKey="menuId"
+        key="menuList"
+        columns={columns}
+        request={(params) =>
+          listMenu(params).then((res) => {
+            const menu = { id: 0, label: '主类目', children: [], value: 0 }
+            const memuData = buildTreeData(
+              res.data,
+              'menuId',
+              'menuName',
+              '',
+              '',
+              ''
+            )
+            menu.children = memuData
+            const treeData = []
+            treeData.push(menu)
+            setMenuTree(treeData)
+            return {
+              data: memuData,
+              total: 0,
+              success: true,
+            }
+          })
+        }
+        toolBarRender={() => [
+          <Button
+            type="primary"
+            key="add"
+            // hidden={!access.hasPerms('system:menu:add')}
+            onClick={async () => {
+              setCurrentRow(undefined)
+              setModalVisible(true)
+            }}
+          >
+            新建
+          </Button>,
+          <Button
+            type="primary"
+            key="remove"
+            danger
+            // hidden={selectedRowsState?.length === 0 || !access.hasPerms('system:menu:remove')}
+            onClick={async () => {
+              const success = await handleRemove(selectedRowsState)
+              if (success) {
+                setSelectedRows([])
+                actionRef.current?.reload()()
+              }
+            }}
+          >
+            批量删除
+          </Button>,
+        ]}
+        rowSelection={{
+          onChange: (_, selectedRows) => {
+            setSelectedRows(selectedRows)
+          },
+        }}
+      />
       <UpdateForm
         onSubmit={async (values) => {
           let success = false
@@ -319,7 +302,7 @@ function Menu() {
           if (success) {
             setModalVisible(false)
             setCurrentRow(undefined)
-            refresh()
+            actionRef.current?.reload()()
           }
         }}
         onCancel={() => {
@@ -336,4 +319,4 @@ function Menu() {
   )
 }
 
-export default withTable(Menu)
+export default MenuTableList
