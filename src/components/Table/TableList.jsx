@@ -248,7 +248,6 @@ function TableList(props) {
             let success = false
             if (currentRow && currentRow[rowKey]) {
               values[rowKey] = currentRow[rowKey]
-              console.log(values)
               success = await handleUpdate(values)
             } else {
               success = await handleAdd(values)
@@ -258,10 +257,7 @@ function TableList(props) {
               actionRef.current.reload()
             }
           }}
-          onCancel={() => {
-            setModalVisible(false)
-            setCurrentRow(undefined)
-          }}
+          onCancel={closeModal}
           visible={modalVisible}
           values={currentRow || {}}
           content={props.modalContent || {}}

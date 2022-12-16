@@ -13,6 +13,7 @@ function TableModal(props) {
   const handleOk = () => {
     form.submit()
   }
+  
   const handleCancel = () => {
     props.onCancel()
     form.resetFields()
