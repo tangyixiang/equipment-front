@@ -1,13 +1,22 @@
-import React, { useState } from 'react'
-import { Button } from 'antd'
+import React, { useState, useRef, useEffect } from 'react'
+import { Modal, Button, message } from 'antd'
 import TableList from '@/components/Table/TableList'
-import UploadForm from './components/upload'
-import { listBankFlow } from '@/api/finance/bankflow'
-import { download } from '@/utils/request'
+import { listBanFlowUnReconciled } from '@/api/finance/bankflow'
+import { matchBankFlow } from '@/api/finance/receivables'
 
-function BankFlowTableList() {
-  const [uploadModal, setUploadModal] = useState(false)
+function DzCompont(props) {
+  const [reload, setReload] = useState(false)
   const [tableRef, setTableRef] = useState()
+  const [selectedRowsState, setSelectedRows] = useState([])
+
+  const handleCancel = () => {
+    setReload(true)
+    props.onCancel()
+  }
+
+  if (props.visible && reload) {
+    tableRef.current.reload()
+  }
 
   const columns = [
     {
@@ -45,7 +54,6 @@ function BankFlowTableList() {
       title: '借/贷',
       dataIndex: 'tradeType',
       valueType: 'select',
-      hideInSearch: true,
       valueEnum: {
         1: '借',
         2: '贷',
@@ -91,7 +99,6 @@ function BankFlowTableList() {
       title: '对账标识',
       dataIndex: 'reconciliationFlag',
       valueType: 'select',
-      hideInSearch: true,
       valueEnum: {
         1: 'Y',
         2: 'N',
@@ -119,7 +126,7 @@ function BankFlowTableList() {
   ]
 
   const crud = {
-    list: listBankFlow,
+    list: listBanFlowUnReconciled,
   }
 
   const optionBtn = {
@@ -127,51 +134,61 @@ function BankFlowTableList() {
     edit: false,
     del: false,
   }
+
   const toolBar = {
     Add: { hidden: true },
     Del: { hidden: true },
   }
 
+  const extratoolBar = [
+    <Button
+      type="primary"
+      onClick={() => {
+        if (selectedRowsState.length == 0) {
+          message.error('请选择银行流水')
+          return false
+        }
+        const dzIds = props.dzData.map((item) => item.id)
+        const bankIds = selectedRowsState.map((item) => item.id)
+        matchBankFlow(dzIds, bankIds).then((res) => {
+          message.success('对账成功')
+          handleCancel()
+        })
+      }}
+    >
+      进行对账
+    </Button>,
+  ]
+
   return (
     <>
-      <TableList
-        rowKey={'id'}
-        columns={columns}
-        initData={false}
-        func={crud}
-        tableRef={setTableRef}
-        optionBtn={optionBtn}
-        labelWidth={100}
-        scroll={{
-          x: 3000,
-        }}
-        toolBar={toolBar}
-        extratoolBar={[
-          <Button
-            type="primary"
-            key="template"
-            onClick={async () => {
-              download(
-                '/bank/flow/template/download',
-                {},
-                '银行流水导入模板.xlsx'
-              )
-            }}
-          >
-            下载模板
-          </Button>,
-          <Button onClick={() => setUploadModal(true)}>批量导入</Button>,
-        ]}
-      />
-      <UploadForm
-        visible={uploadModal}
-        onCancel={() => {
-          setUploadModal(false)
-          tableRef.current.reload()
-        }}
-      />
+      <Modal
+        forceRender
+        width={'75%'}
+        title={'手工对账'}
+        onCancel={handleCancel}
+        open={props.visible}
+        destroyOnClose={true}
+        footer={null}
+      >
+        <TableList
+          rowKey={'id'}
+          columns={columns}
+          initData={false}
+          func={crud}
+          tableRef={setTableRef}
+          selectRow={setSelectedRows}
+          optionBtn={optionBtn}
+          labelWidth={100}
+          scroll={{
+            x: 3000,
+          }}
+          toolBar={toolBar}
+          extratoolBar={extratoolBar}
+        />
+      </Modal>
     </>
   )
 }
 
-export default BankFlowTableList
+export default DzCompont

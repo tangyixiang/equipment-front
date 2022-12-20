@@ -11,6 +11,17 @@ export function listBankFlow(query) {
   })
 }
 
+export function listBanFlowUnReconciled(query) {
+  const { pageNum, pageSize } = query
+  const pageParam = { pageNum, pageSize }
+  return request({
+    url: '/bank/flow/listUnReconcile',
+    method: 'post',
+    params: pageParam,
+    data: query,
+  })
+}
+
 export function uploadValidate(account, startDate, endDate, file) {
   let params = new FormData()
   params.append('file', file)

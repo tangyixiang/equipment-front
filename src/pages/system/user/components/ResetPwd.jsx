@@ -58,6 +58,7 @@ const ResetPwd = (props) => {
       >
         <ProFormText.Password
           width="xl"
+          key="oldPassword"
           name="oldPassword"
           label="旧密码"
           rules={[
@@ -69,6 +70,7 @@ const ResetPwd = (props) => {
         />
         <ProFormText.Password
           width="xl"
+          key="newPassword"
           name="newPassword"
           label="新密码"
           rules={[

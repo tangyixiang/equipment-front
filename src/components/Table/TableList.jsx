@@ -238,6 +238,9 @@ function TableList(props) {
         rowSelection={{
           onChange: (_, selectedRows) => {
             setSelectedRows(selectedRows)
+            if (props.selectRow) {
+              props.selectRow(selectedRows)
+            }
           },
         }}
       />
