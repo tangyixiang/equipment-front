@@ -4,7 +4,7 @@ import { Row, Col } from 'antd'
 import { listJob } from '@/api/monitor/job'
 import { getDicts } from '@/api/system/dict/data'
 
-function FromContent() {
+function FromContent(props) {
   return (
     <>
       <Row>
@@ -44,7 +44,7 @@ function FromContent() {
             }}
             rules={[
               {
-                required: true,
+                required: false,
                 message: '请选择期间！',
               },
             ]}
