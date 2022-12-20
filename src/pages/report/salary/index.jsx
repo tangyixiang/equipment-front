@@ -51,6 +51,18 @@ function EmployeeSalaryReport() {
       hideInSearch: true,
     },
     {
+      dataIndex: 'employeeName',
+      valueType: 'text',
+      title: '姓名',
+      hideInSearch: true,
+    },
+    {
+      dataIndex: 'totalPostSalary',
+      valueType: 'text',
+      hideInSearch: true,
+      title: '岗位工资合计',
+    },
+    {
       dataIndex: 'postSalary',
       valueType: 'text',
       hideInSearch: true,
@@ -63,10 +75,22 @@ function EmployeeSalaryReport() {
       title: '补岗位工资',
     },
     {
+      dataIndex: 'totalRankSalary',
+      valueType: 'text',
+      hideInSearch: true,
+      title: '薪级工资合计',
+    },
+    {
       dataIndex: 'rankSalary',
       valueType: 'text',
       hideInSearch: true,
       title: '薪级工资',
+    },
+    {
+      dataIndex: 'totalPerformanceSalary',
+      valueType: 'text',
+      hideInSearch: true,
+      title: '基础性绩效工资合计',
     },
     {
       dataIndex: 'additionRankSalary',
@@ -242,6 +266,11 @@ function EmployeeSalaryReport() {
       key: 'employeeType',
       label: '人员性质',
       value: 'employeeType',
+    },
+    {
+      key: 'employeeName',
+      label: '职员',
+      value: 'employeeName',
     },
   ]
 
