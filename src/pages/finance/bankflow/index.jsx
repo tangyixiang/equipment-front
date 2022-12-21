@@ -79,12 +79,14 @@ function BankFlowTableList() {
       title: '对方单位名称',
       dataIndex: 'adversaryOrgName',
       valueType: 'text',
+      width: 300,
     },
     {
       title: '个性化信息',
       dataIndex: 'otherInfo',
       valueType: 'text',
       hideInSearch: true,
+      ellipsis: true,
       width: 300,
     },
     {
@@ -143,7 +145,7 @@ function BankFlowTableList() {
         optionBtn={optionBtn}
         labelWidth={100}
         scroll={{
-          x: 3000,
+          x: 3200,
         }}
         toolBar={toolBar}
         extratoolBar={[
