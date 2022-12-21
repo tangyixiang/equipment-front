@@ -213,16 +213,14 @@ const DictTableList = () => {
         key="dictTypeList"
         columns={columns}
         request={(params) =>
-          listType({ ...params, pageNum: params.current, group: type }).then(
-            (res) => {
-              const result = {
-                data: res.rows,
-                total: res.total,
-                success: true,
-              }
-              return result
+          listType({ ...params, group: type }).then((res) => {
+            const result = {
+              data: res.rows,
+              total: res.total,
+              success: true,
             }
-          )
+            return result
+          })
         }
         pagination={{
           defaultPageSize: 10,

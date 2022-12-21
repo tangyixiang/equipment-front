@@ -185,7 +185,6 @@ function DictData(props) {
           request={(params) =>
             listData({
               ...params,
-              pageNum: params.current,
               dictType: props.values.dictType,
             }).then((res) => {
               const result = {

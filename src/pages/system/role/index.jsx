@@ -248,7 +248,7 @@ function RoleTableList() {
         key="roleList"
         columns={columns}
         request={(params) =>
-          listRole({ ...params, pageNum: params.current }).then((res) => {
+          listRole(params).then((res) => {
             return {
               data: res.rows,
               total: res.total,

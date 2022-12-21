@@ -275,7 +275,7 @@ const JobTableList = () => {
         key="jobList"
         columns={columns}
         request={(params) =>
-          listJob({ ...params, pageNum: params.current }).then((res) => {
+          listJob(params).then((res) => {
             const result = {
               data: res.rows,
               total: res.total,

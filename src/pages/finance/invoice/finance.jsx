@@ -177,7 +177,7 @@ const FinanceTableList = () => {
           }}
           columns={columns}
           request={(params) =>
-            listFinance({ ...params, pageNum: params.current }).then((res) => {
+            listFinance(params).then((res) => {
               const result = {
                 data: res.rows,
                 total: res.total,

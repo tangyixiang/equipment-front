@@ -270,7 +270,7 @@ function UserTableList() {
             rowKey="userId"
             key="userList"
             request={(params) =>
-              listUser({ ...params, pageNum: params.current }).then((res) => {
+              listUser(params).then((res) => {
                 return {
                   data: res.rows,
                   total: res.total,

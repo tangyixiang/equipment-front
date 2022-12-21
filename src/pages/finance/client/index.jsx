@@ -183,7 +183,7 @@ const ClientOrgTableList = () => {
           showTotal: (total) => `总共 ${total} 条`,
         }}
         request={(params) =>
-          listClient({ ...params, pageNum: params.current }).then((res) => {
+          listClient(params).then((res) => {
             const result = {
               data: res.rows,
               total: res.total,

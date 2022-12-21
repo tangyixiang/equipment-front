@@ -222,7 +222,7 @@ const EmployeeSalaryTableList = () => {
         key="tablelist"
         columns={columns}
         request={(params) =>
-          listSalary({ ...params, pageNum: params.current }).then((res) => {
+          listSalary(params).then((res) => {
             const result = {
               data: res.rows,
               total: res.total,

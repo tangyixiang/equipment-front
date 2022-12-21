@@ -1,8 +1,11 @@
 import request from '@/utils/request'
 
 export function listReceivable(query) {
-  const { pageNum, pageSize } = query
-  const pageParam = { pageNum, pageSize }
+  const { current, pageSize } = query
+  const pageParam = { current, pageSize }
+  if (query.period) {
+    query.period = query.period.replace('-', '')
+  }
   return request({
     url: '/company/receivable/list',
     method: 'post',

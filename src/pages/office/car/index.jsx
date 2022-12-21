@@ -257,7 +257,7 @@ const CarTableList = () => {
         rowKey="id"
         key="companyCarList"
         request={(params) =>
-          listCar({ ...params, pageNum: params.current }).then((res) => {
+          listCar(params).then((res) => {
             const result = {
               data: res.rows,
               total: res.total,

@@ -226,7 +226,7 @@ function TableList(props) {
           showTotal: (total) => `总共 ${total} 条`,
         }}
         request={(params) =>
-          func.list({ ...params, pageNum: params.current }).then((res) => {
+          func.list(params).then((res) => {
             const result = {
               data: res.rows,
               total: res.total,

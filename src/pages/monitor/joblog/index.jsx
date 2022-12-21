@@ -186,7 +186,7 @@ const JobLogTableList = () => {
         columns={columns}
         search={null}
         request={(params) =>
-          listJobLog({ ...params, pageNum: params.current }).then((res) => {
+          listJobLog(params).then((res) => {
             const result = {
               data: res.rows,
               total: res.total,

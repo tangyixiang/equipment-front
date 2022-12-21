@@ -205,7 +205,7 @@ const Notice = () => {
         key="noticeList"
         columns={columns}
         request={(params) =>
-          listNotice({ ...params, pageNum: params.current }).then((res) => {
+          listNotice(params).then((res) => {
             const result = {
               data: res.rows,
               total: res.total,

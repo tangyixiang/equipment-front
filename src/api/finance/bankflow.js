@@ -1,8 +1,8 @@
 import request from '@/utils/request'
 
 export function listBankFlow(query) {
-  const { pageNum, pageSize } = query
-  const pageParam = { pageNum, pageSize }
+  const { current, pageSize } = query
+  const pageParam = { current, pageSize }
   return request({
     url: '/bank/flow/list',
     method: 'post',
@@ -12,8 +12,8 @@ export function listBankFlow(query) {
 }
 
 export function listBanFlowUnReconciled(query) {
-  const { pageNum, pageSize } = query
-  const pageParam = { pageNum, pageSize }
+  const { current, pageSize } = query
+  const pageParam = { current, pageSize }
   return request({
     url: '/bank/flow/listUnReconcile',
     method: 'post',

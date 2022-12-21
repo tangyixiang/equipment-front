@@ -344,7 +344,7 @@ const OperatTableList = () => {
         }}
         columns={columns}
         request={(params) =>
-          listOperating({ ...params, pageNum: params.current }).then((res) => {
+          listOperating(params).then((res) => {
             const result = {
               data: res.rows,
               total: res.total,

@@ -272,7 +272,7 @@ const ContractTableList = () => {
         key="companyCarList"
         columns={columns}
         request={(params) =>
-          listContract({ ...params, pageNum: params.current }).then((res) => {
+          listContract(params).then((res) => {
             return {
               data: res.rows,
               total: res.total,
