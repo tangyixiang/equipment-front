@@ -45,7 +45,6 @@ function BankFlowTableList() {
       title: '借/贷',
       dataIndex: 'tradeType',
       valueType: 'select',
-      hideInSearch: true,
       valueEnum: {
         1: '借',
         2: '贷',
@@ -93,7 +92,6 @@ function BankFlowTableList() {
       title: '对账标识',
       dataIndex: 'reconciliationFlag',
       valueType: 'select',
-      hideInSearch: true,
       valueEnum: {
         1: 'Y',
         2: 'N',
@@ -114,9 +112,15 @@ function BankFlowTableList() {
     },
     {
       title: '应收对账ID',
-      dataIndex: 'associationId',
-      hideInSearch: true,
+      dataIndex: 'associationIdStr',
       valueType: 'text',
+      render: (_, record) => {
+        if (record.associationId != null) {
+          return record.associationId.map((item) => <p key={item}>{item}</p>)
+        }
+        console.log(record.associationId)
+        return record.associationId
+      },
     },
   ]
 
