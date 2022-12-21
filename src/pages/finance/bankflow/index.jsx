@@ -103,7 +103,6 @@ function BankFlowTableList() {
       title: '对账类别',
       dataIndex: 'reconciliationModel',
       valueType: 'select',
-      hideInSearch: true,
       valueEnum: {
         1: '自动',
         2: '手动',

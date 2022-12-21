@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { ProFormText } from '@ant-design/pro-form'
-import { Form, message, Modal } from 'antd'
+import { Form, message, Modal, Input } from 'antd'
 import { updateUserPwd } from '@/api/system/user'
 
 const ResetPwd = (props) => {
@@ -56,9 +56,7 @@ const ResetPwd = (props) => {
           confirm_password: '',
         }}
       >
-        <ProFormText.Password
-          width="xl"
-          key="oldPassword"
+        <Form.Item
           name="oldPassword"
           label="旧密码"
           rules={[
@@ -67,10 +65,10 @@ const ResetPwd = (props) => {
               message: '旧密码不可为空。',
             },
           ]}
-        />
-        <ProFormText.Password
-          width="xl"
-          key="newPassword"
+        >
+          <Input.Password width="xl" autoComplete="off" />
+        </Form.Item>
+        <Form.Item
           name="newPassword"
           label="新密码"
           rules={[
@@ -80,7 +78,9 @@ const ResetPwd = (props) => {
             },
             { validator: checkPassword },
           ]}
-        />
+        >
+          <Input.Password width="xl" autoComplete="off" />
+        </Form.Item>
       </Form>
     </Modal>
   )

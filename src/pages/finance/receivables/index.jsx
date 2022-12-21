@@ -101,7 +101,6 @@ function ReceivablesTableList() {
     },
     {
       dataIndex: 'reconciliationFlag',
-      key: 'reconciliation',
       title: '对账标识',
       valueType: 'select',
       valueEnum: {
@@ -120,10 +119,16 @@ function ReceivablesTableList() {
       },
     },
     {
-      dataIndex: 'associationId',
       title: '应收对账ID',
+      dataIndex: 'associationIdStr',
       valueType: 'text',
-      hideInSearch: true,
+      render: (_, record) => {
+        if (record.associationId != null) {
+          return record.associationId.map((item) => <p key={item}>{item}</p>)
+        }
+        console.log(record.associationId)
+        return record.associationId
+      },
     },
     {
       title: '操作',
