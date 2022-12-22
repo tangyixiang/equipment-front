@@ -61,7 +61,8 @@ function ReceivablesTableList() {
       valueEnum: {
         1: '财政发票',
         2: '经营发票',
-        3: '初始化数据',
+        3: '初始化财政发票',
+        4: '初始化经营发票',
       },
     },
     {
@@ -124,7 +125,9 @@ function ReceivablesTableList() {
       valueType: 'text',
       render: (_, record) => {
         if (record.associationId != null) {
-          return record.associationId.map((item) => <p key={item}>{item}</p>)
+          return record.associationId.map((item) => (
+            <div key={item}>{item}</div>
+          ))
         }
         console.log(record.associationId)
         return record.associationId
@@ -139,6 +142,7 @@ function ReceivablesTableList() {
           type="link"
           size="small"
           key="view"
+          disabled={record.reconciliationFlag == '2'}
           // hidden={!access.hasPerms('system:user:edit')}
           onClick={() => {
             cancelReceivable([record.id]).then(() => {
@@ -279,6 +283,7 @@ function ReceivablesTableList() {
         contianModal={false}
       />
       <DzCompont
+        parentTableRef={tableRef}
         visible={dzModal}
         dzData={selectedRows}
         onCancel={setDzModal}

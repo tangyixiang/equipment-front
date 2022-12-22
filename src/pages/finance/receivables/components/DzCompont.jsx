@@ -87,12 +87,14 @@ function DzCompont(props) {
       title: '对方单位名称',
       dataIndex: 'adversaryOrgName',
       valueType: 'text',
+      width: 300,
     },
     {
       title: '个性化信息',
       dataIndex: 'otherInfo',
       valueType: 'text',
       hideInSearch: true,
+      ellipsis: true,
       width: 300,
     },
     {
@@ -119,9 +121,17 @@ function DzCompont(props) {
     },
     {
       title: '应收对账ID',
-      dataIndex: 'associationId',
-      hideInSearch: true,
+      dataIndex: 'associationIdStr',
       valueType: 'text',
+      render: (_, record) => {
+        if (record.associationId != null) {
+          return record.associationId.map((item) => (
+            <div key={item}>{item}</div>
+          ))
+        }
+        console.log(record.associationId)
+        return record.associationId
+      },
     },
   ]
 
@@ -152,6 +162,8 @@ function DzCompont(props) {
         const bankIds = selectedRowsState.map((item) => item.id)
         matchBankFlow(dzIds, bankIds).then((res) => {
           message.success('对账成功')
+          tableRef.current.reload()
+          props.parentTableRef?.current.reload()
           handleCancel()
         })
       }}
@@ -181,7 +193,7 @@ function DzCompont(props) {
           optionBtn={optionBtn}
           labelWidth={100}
           scroll={{
-            x: 3000,
+            x: 3200,
           }}
           toolBar={toolBar}
           extratoolBar={extratoolBar}

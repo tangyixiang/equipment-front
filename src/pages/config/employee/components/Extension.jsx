@@ -1,18 +1,44 @@
-import React, { useState, useEffect } from 'react'
-import { Row, Col, Select } from 'antd'
+import React, { useState } from 'react'
+import { Row, Col, Upload, message } from 'antd'
 import { EditableProTable } from '@ant-design/pro-table'
 import { nanoid } from 'nanoid'
 import { transFormEditTableSelectData } from '@/utils/dictUtils'
 import { ProFormSelect } from '@ant-design/pro-form'
 import { getDicts } from '@/api/system/dict/data'
+import { getUploadUrl } from '@/utils/common'
+import { getAccessToken } from '@/utils/access'
+import EditTableUpload from './EditTableUpload'
 
 function Extension(props) {
   const [editableKeys, setEditableRowKeys] = useState([])
-
+  const [fileList, setFileList] = useState([])
   // 值的下拉选项
   const [dimensionValueOpt, setDimensionValueOpt] = useState({})
-
   const { dimensionValueMap } = props
+
+  const beforeUpload = (file) => {
+    // const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png'
+    // if (!isJpgOrPng) {
+    //   message.error('请上传上传JPG/PNG格式图片')
+    // }
+    const isLt2M = file.size / 1024 / 1024 < 10
+    if (!isLt2M) {
+      message.error('图片大小超过10MB!')
+    }
+    return isLt2M
+  }
+
+  const handleChange = (row, file, fileList) => {
+    if (file.status === 'done') {
+      if (file.response.code !== 200) {
+        message.error(file.response.msg)
+        setFileList(fileList.pop())
+      }
+    }
+    console.log(fileList)
+    console.log(row)
+    setFileList(fileList)
+  }
 
   const certificateColumns = [
     {
@@ -38,6 +64,18 @@ function Extension(props) {
     {
       title: '附件',
       dataIndex: 'attachment',
+      // renderFormItem: (text, row, index) => (
+      //   <Upload
+      //     action={getUploadUrl() + '/common/upload'}
+      //     headers={{ Authorization: 'Bearer ' + getAccessToken() }}
+      //     fileList={fileList}
+      //     beforeUpload={beforeUpload}
+      //     onChange={({ file, fileList }) => handleChange(row, file, fileList)}
+      //   >
+      //     <Button>上传</Button>
+      //   </Upload>
+      // ),
+      // renderFormItem: (text, row, index) => <EditTableUpload />,
     },
     {
       title: '操作',

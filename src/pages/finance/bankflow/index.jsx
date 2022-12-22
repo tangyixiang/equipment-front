@@ -115,7 +115,9 @@ function BankFlowTableList() {
       valueType: 'text',
       render: (_, record) => {
         if (record.associationId != null) {
-          return record.associationId.map((item) => <p key={item}>{item}</p>)
+          return record.associationId.map((item) => (
+            <div key={item}>{item}</div>
+          ))
         }
         console.log(record.associationId)
         return record.associationId
