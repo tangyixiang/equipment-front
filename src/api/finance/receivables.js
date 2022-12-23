@@ -14,7 +14,10 @@ export function listReceivable(query) {
   })
 }
 
-export function delInitData(data) {
+export function delInitData(dzIds) {
+  const data = {
+    receivablesIds: dzIds,
+  }
   return request({
     url: '/company/receivable/delInitData',
     method: 'post',

@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useState, useLayoutEffect } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Button, message, Modal } from 'antd'
 import ProTable from '@ant-design/pro-table'
 import TableModal from './TableModal'
+import { pagination } from '@/constants'
 
 function TableList(props) {
   const { func, optionBtn, rowKey, columns, scroll, labelWidth } = props
@@ -220,9 +221,7 @@ function TableList(props) {
           ...extratoolBar,
         ]}
         pagination={{
-          defaultPageSize: 10,
-          showQuickJumper: true,
-          showSizeChanger: true,
+          ...pagination,
           showTotal: (total) => `总共 ${total} 条`,
         }}
         request={(params) =>

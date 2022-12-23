@@ -28,6 +28,7 @@ function ReceivablesTableList() {
       dataIndex: 'period',
       title: '期间',
       valueType: 'dateMonth',
+      width: 100,
       render: (_, record) => record.period,
     },
     {
@@ -104,6 +105,7 @@ function ReceivablesTableList() {
       dataIndex: 'reconciliationFlag',
       title: '对账标识',
       valueType: 'select',
+      width: 100,
       valueEnum: {
         1: 'Y',
         2: 'N',
@@ -114,6 +116,7 @@ function ReceivablesTableList() {
       dataIndex: 'reconciliationModel',
       title: '对账类别',
       valueType: 'select',
+      width: 100,
       valueEnum: {
         1: '自动',
         2: '手动',
@@ -135,8 +138,9 @@ function ReceivablesTableList() {
     },
     {
       title: '操作',
-      width: '220px',
+      width: '110px',
       hideInSearch: true,
+      fixed: 'right',
       render: (_, record) => [
         <Button
           type="link"
@@ -253,12 +257,13 @@ function ReceivablesTableList() {
       type="primary"
       key="delData"
       danger
-      onClick={() =>
-        delInitData().then(() => {
+      onClick={() => {
+        const dzIds = selectedRows.map((item) => item.id)
+        delInitData(dzIds).then(() => {
           message.success('删除初始化数据成功')
           tableRef.current.reload()
         })
-      }
+      }}
     >
       删除初始化单据
     </Button>,
