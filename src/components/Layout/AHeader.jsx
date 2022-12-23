@@ -47,13 +47,13 @@ function AHeader() {
     <>
       <Layout.Header className="pl-5 h-12">
         <div className="flex justify-between h-12">
-          {/* <div className="flex">
-            <img className="w-[42px]" alt="logo" src="logo.svg" />
+          {/* <img className="w-[42px]" alt="logo" src="./logo.svg" /> */}
+          <div className="flex">
+            <img className="w-[42px]" alt="logo" src="./logo.svg" />
             <div className="text-white text-base flex items-center">
-              检测系统
+              广西特检院桂林分院数字化平台
             </div>
-          </div> */}
-          <img className="w-[42px]" alt="logo" src="./logo.svg" />
+          </div>
           <Dropdown overlay={menu}>
             <Space className="text-slate-100">
               {userStore.userInfo.nickName}
