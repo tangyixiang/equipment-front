@@ -1,10 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { ProFormSelect } from '@ant-design/pro-form'
 import { Row, Col } from 'antd'
 import { listJob } from '@/api/monitor/job'
 import { getDicts } from '@/api/system/dict/data'
 
 function FromContent(props) {
+  const [rule, setRule] = useState(false)
+
   return (
     <>
       <Row>
@@ -19,6 +21,14 @@ function FromContent(props) {
                 label: item.jobName,
                 value: item.jobId,
               }))
+            }}
+            onChange={(value) => {
+              listJob({ jobGroup: 'BUSI' }).then((res) => {
+                const data = res.rows.filter((item) => item.jobId == value)
+                if (data) {
+                  setRule(data[0].jobName == '分录生成作业')
+                }
+              })
             }}
             rules={[
               {
@@ -44,7 +54,7 @@ function FromContent(props) {
             }}
             rules={[
               {
-                required: false,
+                required: rule,
                 message: '请选择期间！',
               },
             ]}
