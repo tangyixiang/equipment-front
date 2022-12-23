@@ -75,6 +75,13 @@ function Extension(props) {
       //     <Button>上传</Button>
       //   </Upload>
       // ),
+
+      // renderText: (text, record) => {
+      //   if (record.attachment) {
+      //     let fileNames = record.attachment.map((item) => item.name)
+      //     return fileNames.toString()
+      //   }
+      // },
       // renderFormItem: (text, row, index) => <EditTableUpload />,
     },
     {

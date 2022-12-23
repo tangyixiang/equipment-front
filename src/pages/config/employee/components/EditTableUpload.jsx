@@ -15,7 +15,7 @@ const EditTableUpload = (props) => {
         if (item.response) {
           arr.push({
             name: item.name,
-            id: item.response.data,
+            data: item.response?.url,
           })
         } else {
           arr.push(item)
@@ -37,11 +37,39 @@ const EditTableUpload = (props) => {
     return isLt2M
   }
 
+  const handleDownload = (file) => {
+    console.log(file)
+    fetch(file.response.url, {
+      method: 'GET',
+      credentials: 'include',
+      headers: new Headers({
+        'Content-Type': 'application/json',
+      }),
+    })
+      .then((response) => {
+        response.blob().then((blob) => {
+          const aLink = document.createElement('a')
+          document.body.appendChild(aLink)
+          aLink.style.display = 'none'
+          aLink.href = window.URL.createObjectURL(blob)
+          aLink.download = file.response.originalFilename
+          aLink.click()
+          document.body.removeChild(aLink)
+        })
+      })
+      .catch((error) => {
+        console.log(error)
+        message.error('文件下载失败')
+      })
+  }
+
   return (
     <Upload
       action={getUploadUrl() + '/common/upload'}
       headers={{ Authorization: 'Bearer ' + getAccessToken() }}
       onChange={changeFile}
+      onDownload={handleDownload}
+      showUploadList={{ showDownloadIcon: true }}
       beforeUpload={beforeUpload}
       defaultFileList={attachments}
     >
