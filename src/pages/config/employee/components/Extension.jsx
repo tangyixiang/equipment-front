@@ -16,30 +16,6 @@ function Extension(props) {
   const [dimensionValueOpt, setDimensionValueOpt] = useState({})
   const { dimensionValueMap } = props
 
-  const beforeUpload = (file) => {
-    // const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png'
-    // if (!isJpgOrPng) {
-    //   message.error('请上传上传JPG/PNG格式图片')
-    // }
-    const isLt2M = file.size / 1024 / 1024 < 10
-    if (!isLt2M) {
-      message.error('图片大小超过10MB!')
-    }
-    return isLt2M
-  }
-
-  const handleChange = (row, file, fileList) => {
-    if (file.status === 'done') {
-      if (file.response.code !== 200) {
-        message.error(file.response.msg)
-        setFileList(fileList.pop())
-      }
-    }
-    console.log(fileList)
-    console.log(row)
-    setFileList(fileList)
-  }
-
   const certificateColumns = [
     {
       title: '检验资质',
@@ -76,13 +52,13 @@ function Extension(props) {
       //   </Upload>
       // ),
 
-      // renderText: (text, record) => {
-      //   if (record.attachment) {
-      //     let fileNames = record.attachment.map((item) => item.name)
-      //     return fileNames.toString()
-      //   }
-      // },
-      // renderFormItem: (text, row, index) => <EditTableUpload />,
+      renderText: (text, record) => {
+        if (record.attachment) {
+          let fileNames = record.attachment.map((item) => item.name)
+          return fileNames.toString()
+        }
+      },
+      renderFormItem: (text, row, index) => <EditTableUpload />,
     },
     {
       title: '操作',

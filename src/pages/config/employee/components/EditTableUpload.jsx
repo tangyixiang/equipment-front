@@ -2,6 +2,7 @@ import React from 'react'
 import { Button, Upload, message } from 'antd'
 import { getUploadUrl } from '@/utils/common'
 import { getAccessToken } from '@/utils/access'
+import { encode, decode } from 'js-base64'
 
 const EditTableUpload = (props) => {
   const attachments = props.value
@@ -9,15 +10,14 @@ const EditTableUpload = (props) => {
 
   const changeFile = ({ file, fileList }) => {
     if (file.status !== 'uploading') {
-      // console.log(file, fileList)
       const arr = []
       fileList.forEach((item) => {
         if (item.response) {
-          arr.push({
-            name: item.name,
-            data: item.response?.url,
-          })
-        } else {
+          // arr.push({
+          //   key: item.uid,
+          //   name: item.name,
+          //   data: item.response?.url,
+          // })
           arr.push(item)
         }
       })
@@ -32,7 +32,7 @@ const EditTableUpload = (props) => {
     // }
     const isLt2M = file.size / 1024 / 1024 < 10
     if (!isLt2M) {
-      message.error('图片大小超过10MB!')
+      message.error('文件大小超过10MB!')
     }
     return isLt2M
   }
@@ -63,13 +63,22 @@ const EditTableUpload = (props) => {
       })
   }
 
+  const handlePreview = (file) => {
+    window.open(
+      process.env.REACT_APP_FILE_REVIEW +
+        '/onlinePreview?url=' +
+        encodeURIComponent(encode(file.response?.url))
+    )
+  }
+
   return (
     <Upload
       action={getUploadUrl() + '/common/upload'}
       headers={{ Authorization: 'Bearer ' + getAccessToken() }}
       onChange={changeFile}
       onDownload={handleDownload}
-      showUploadList={{ showDownloadIcon: true }}
+      onPreview={handlePreview}
+      showUploadList={{ showPreviewIcon: true, showDownloadIcon: true }}
       beforeUpload={beforeUpload}
       defaultFileList={attachments}
     >
