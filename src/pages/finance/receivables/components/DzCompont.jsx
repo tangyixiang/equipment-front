@@ -65,6 +65,20 @@ function DzCompont(props) {
       width: 100,
     },
     {
+      title: '已对账金额',
+      dataIndex: 'confirmPrice',
+      valueType: 'text',
+      hideInSearch: true,
+      width: 100,
+    },
+    {
+      title: '未对账金额',
+      dataIndex: 'unConfirmPrice',
+      valueType: 'text',
+      hideInSearch: true,
+      width: 100,
+    },
+    {
       title: '对账标识',
       dataIndex: 'reconciliationFlag',
       valueType: 'select',
