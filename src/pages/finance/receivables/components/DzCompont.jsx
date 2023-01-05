@@ -55,6 +55,11 @@ function DzCompont(props) {
       width: 300,
     },
     {
+      title: '对方行号',
+      dataIndex: 'adversaryBankCode',
+      valueType: 'text',
+    },
+    {
       title: '金额',
       dataIndex: 'price',
       valueType: 'text',
@@ -106,32 +111,31 @@ function DzCompont(props) {
       hideInSearch: true,
       render: (_, row, index, action) => row.tradeTime,
     },
-
-    // {
-    //   title: '对账类别',
-    //   dataIndex: 'reconciliationModel',
-    //   valueType: 'select',
-    //   hideInSearch: true,
-    //   valueEnum: {
-    //     1: '自动',
-    //     2: '手动',
-    //   },
-    //   width: 100,
-    // },
-    // {
-    //   title: '应收对账ID',
-    //   dataIndex: 'associationIdStr',
-    //   valueType: 'text',
-    //   render: (_, record) => {
-    //     if (record.associationId != null) {
-    //       return record.associationId.map((item) => (
-    //         <div key={item}>{item}</div>
-    //       ))
-    //     }
-    //     console.log(record.associationId)
-    //     return record.associationId
-    //   },
-    // },
+    {
+      title: '对账类别',
+      dataIndex: 'reconciliationModel',
+      valueType: 'select',
+      hideInSearch: true,
+      valueEnum: {
+        1: '自动',
+        2: '手动',
+      },
+      width: 100,
+    },
+    {
+      title: '应收对账ID',
+      dataIndex: 'associationIdStr',
+      valueType: 'text',
+      render: (_, record) => {
+        if (record.associationId != null) {
+          return record.associationId.map((item) => (
+            <div key={item}>{item}</div>
+          ))
+        }
+        console.log(record.associationId)
+        return record.associationId
+      },
+    },
   ]
 
   return (
