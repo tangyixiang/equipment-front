@@ -37,6 +37,11 @@ function DzCompont(props) {
 
   const columns = [
     {
+      title: '流水ID',
+      dataIndex: 'id',
+      valueType: 'text',
+    },
+    {
       title: '凭证号',
       dataIndex: 'bankSiteCode',
       valueType: 'text',
@@ -108,14 +113,12 @@ function DzCompont(props) {
       dataIndex: 'tradeTimeArray',
       valueType: 'dateRange',
       width: 200,
-      hideInSearch: true,
       render: (_, row, index, action) => row.tradeTime,
     },
     {
       title: '对账类别',
       dataIndex: 'reconciliationModel',
       valueType: 'select',
-      hideInSearch: true,
       valueEnum: {
         1: '自动',
         2: '手动',
@@ -143,7 +146,7 @@ function DzCompont(props) {
       <Drawer
         title={'手工对账'}
         placement="right"
-        width={'60%'}
+        width={'70%'}
         onClose={handleCancel}
         destroyOnClose={true}
         open={props.visible}
@@ -195,6 +198,12 @@ function DzCompont(props) {
             pagination={{
               ...pagination,
               showTotal: (total) => `总共 ${total} 条`,
+            }}
+            search={{
+              labelWidth: 100,
+            }}
+            scroll={{
+              x: 2600,
             }}
             request={async (params) => {
               // const clientOrgName = props.dzData[0].clientOrgName
