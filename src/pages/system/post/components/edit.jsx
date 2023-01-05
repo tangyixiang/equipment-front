@@ -14,18 +14,18 @@ const PostForm = (props) => {
 
   useEffect(() => {
     form.resetFields()
-    form.setFieldsValue({
-      postId: props.values.postId,
-      postCode: props.values.postCode,
-      postName: props.values.postName,
-      postSort: props.values.postSort,
-      status: props.values.status,
-      createBy: props.values.createBy,
-      createTime: props.values.createTime,
-      updateBy: props.values.updateBy,
-      updateTime: props.values.updateTime,
-      remark: props.values.remark,
-    })
+    // form.setFieldsValue({
+    //   postId: props.values.postId,
+    //   postCode: props.values.postCode,
+    //   postName: props.values.postName,
+    //   postSort: props.values.postSort,
+    //   status: props.values.status,
+    //   createBy: props.values.createBy,
+    //   createTime: props.values.createTime,
+    //   updateBy: props.values.updateBy,
+    //   updateTime: props.values.updateTime,
+    //   remark: props.values.remark,
+    // })
   }, [form, props])
 
   const handleOk = () => {

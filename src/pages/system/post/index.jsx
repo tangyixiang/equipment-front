@@ -254,7 +254,7 @@ function Post() {
           if (success) {
             setModalVisible(false)
             setCurrentRow(undefined)
-            actionRef.current?.reload()()
+            actionRef.current?.reload()
           }
         }}
         onCancel={() => {

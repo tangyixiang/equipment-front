@@ -40,28 +40,24 @@ function DzCompont(props) {
       title: '凭证号',
       dataIndex: 'bankSiteCode',
       valueType: 'text',
-      hideInSearch: true,
       width: 200,
     },
     {
       title: '本方账号',
       dataIndex: 'selfAccount',
       valueType: 'text',
-      hideInSearch: true,
       width: 200,
     },
     {
       title: '对方单位名称',
       dataIndex: 'adversaryOrgName',
       valueType: 'text',
-      hideInSearch: true,
       width: 300,
     },
     {
       title: '金额',
       dataIndex: 'price',
       valueType: 'text',
-      hideInSearch: true,
       width: 100,
     },
     {
@@ -197,12 +193,12 @@ function DzCompont(props) {
               showTotal: (total) => `总共 ${total} 条`,
             }}
             request={async (params) => {
-              const clientOrgName = props.dzData[0].clientOrgName
-              const bankAccount = props.dzData[0].bankAccount
+              // const clientOrgName = props.dzData[0].clientOrgName
+              // const bankAccount = props.dzData[0].bankAccount
               const data = {
                 ...params,
-                selfAccount: bankAccount,
-                adversaryOrgName: clientOrgName,
+                // selfAccount: bankAccount,
+                // adversaryOrgName: clientOrgName,
               }
               const res = await listBanFlowUnReconciled(data)
               return {
