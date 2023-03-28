@@ -2,11 +2,7 @@ import React, { useEffect, useState, useRef } from 'react'
 import { uploadValidate, uploadFlow } from '@/api/finance/bankflow'
 import { listAccount } from '@/api/finance/bankaccount'
 import { UploadOutlined } from '@ant-design/icons'
-import ProForm, {
-  ProFormText,
-  ProFormDatePicker,
-  ProFormSelect,
-} from '@ant-design/pro-form'
+import ProForm, { ProFormDatePicker, ProFormSelect } from '@ant-design/pro-form'
 import {
   Form,
   Modal,
@@ -19,6 +15,7 @@ import {
   Typography,
 } from 'antd'
 import { formateDate } from '@/utils/common'
+import { listOpen } from '@/api/config/period'
 
 const UploadForm = (props) => {
   const [form] = Form.useForm()
@@ -143,6 +140,33 @@ const UploadForm = (props) => {
                   {
                     required: true,
                     message: '请选择本方账号！',
+                  },
+                ]}
+              />
+            </Col>
+          </Row>
+          <Row gutter={[16, 16]}>
+            <Col span={24}>
+              <ProFormSelect
+                name="period"
+                label={'会计期间'}
+                labelCol={{ span: 4 }}
+                width="md"
+                request={async () => {
+                  let data = []
+                  const res = await listOpen()
+                  if (res.code === 200) {
+                    data = res.rows.map((item) => ({
+                      label: item.period,
+                      value: item.period,
+                    }))
+                  }
+                  return data
+                }}
+                rules={[
+                  {
+                    required: true,
+                    message: '请选择会计期间！',
                   },
                 ]}
               />

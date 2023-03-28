@@ -165,7 +165,7 @@ const JobLogTableList = () => {
               onOk: async () => {
                 const success = await handleRemoveOne(record)
                 if (success) {
-                  actionRef.current?.reload()()
+                  actionRef.current?.reload()
                 }
               },
             })
@@ -209,7 +209,7 @@ const JobLogTableList = () => {
                   const success = await handleRemove(selectedRowsState)
                   if (success) {
                     setSelectedRows([])
-                    actionRef.current?.reload()()
+                    actionRef.current?.reload()
                   }
                 },
                 onCancel() {},
@@ -229,7 +229,7 @@ const JobLogTableList = () => {
                 content: '请谨慎操作',
                 async onOk() {
                   handleRemoveAll()
-                  actionRef.current?.reload()()
+                  actionRef.current?.reload()
                 },
                 onCancel() {},
               })

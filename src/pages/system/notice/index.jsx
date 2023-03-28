@@ -185,7 +185,7 @@ const Notice = () => {
               onOk: async () => {
                 const success = await handleRemoveOne(record)
                 if (success) {
-                  actionRef.current?.reload()()
+                  actionRef.current?.reload()
                 }
               },
             })
@@ -240,7 +240,7 @@ const Notice = () => {
               const success = await handleRemove(selectedRowsState)
               if (success) {
                 setSelectedRows([])
-                actionRef.current?.reload()()
+                actionRef.current?.reload()
               }
             }}
           >
@@ -264,7 +264,7 @@ const Notice = () => {
           if (success) {
             setModalVisible(false)
             setCurrentRow(undefined)
-            actionRef.current?.reload()()
+            actionRef.current?.reload()
           }
         }}
         onCancel={() => {

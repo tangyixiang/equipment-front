@@ -119,7 +119,6 @@ function BankFlowTableList() {
             <div key={item}>{item}</div>
           ))
         }
-        console.log(record.associationId)
         return record.associationId
       },
     },

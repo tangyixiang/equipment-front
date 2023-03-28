@@ -193,7 +193,7 @@ const DictTableList = () => {
               onOk: async () => {
                 const success = await handleRemoveOne(record)
                 if (success) {
-                  actionRef.current?.reload()()
+                  actionRef.current?.reload()
                 }
               },
             })
@@ -249,7 +249,7 @@ const DictTableList = () => {
               const success = await handleRemove(selectedRowsState)
               if (success) {
                 setSelectedRows([])
-                actionRef.current?.reload()()
+                actionRef.current?.reload()
               }
             }}
           >
@@ -274,7 +274,7 @@ const DictTableList = () => {
           if (success) {
             setModalVisible(false)
             setCurrentRow(undefined)
-            actionRef.current?.reload()()
+            actionRef.current?.reload()
           }
         }}
         onCancel={() => {

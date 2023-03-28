@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { ProFormSelect } from '@ant-design/pro-form'
 import { Row, Col } from 'antd'
 import { listJob } from '@/api/monitor/job'
-import { getDicts } from '@/api/system/dict/data'
+import { listOpen } from '@/api/config/period'
 
 function FromContent(props) {
   const [rule, setRule] = useState(false)
@@ -42,20 +42,24 @@ function FromContent(props) {
       <Row>
         <Col span={24}>
           <ProFormSelect
-            name="params"
-            label={'会计期'}
+            name="period"
+            label={'会计期间'}
             labelCol={{ span: 4 }}
             request={async () => {
-              const res = await getDicts('invoice_accounting_period')
-              return res.data.map((item) => ({
-                label: item.dictLabel,
-                value: item.dictLabel,
-              }))
+              let data = []
+              const res = await listOpen()
+              if (res.code === 200) {
+                data = res.rows.map((item) => ({
+                  label: item.period,
+                  value: item.period,
+                }))
+              }
+              return data
             }}
             rules={[
               {
-                required: rule,
-                message: '请选择期间！',
+                required: true,
+                message: '请选择会计期间！',
               },
             ]}
           />

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { UploadOutlined } from '@ant-design/icons'
-import ProForm, { ProFormDatePicker } from '@ant-design/pro-form'
+import ProForm, { ProFormSelect } from '@ant-design/pro-form'
 import {
   Form,
   Modal,
@@ -14,6 +14,7 @@ import {
 } from 'antd'
 import { formateMonth } from '@/utils/common'
 import { uploadInvoice } from '@/api/finance/invoice'
+import { listOpen } from '@/api/config/period'
 
 const UploadForm = (props) => {
   const [form] = Form.useForm()
@@ -87,19 +88,28 @@ const UploadForm = (props) => {
           formRef={formRef}
           onFinish={handleFinish}
         >
-          <Row>
+          <Row gutter={[16, 16]}>
             <Col span={24}>
-              <ProFormDatePicker
+              <ProFormSelect
                 name="period"
-                label={'导入期间'}
+                label={'会计期间'}
                 labelCol={{ span: 4 }}
-                picker="month"
-                format="YYYYMM"
                 width="md"
+                request={async () => {
+                  let data = []
+                  const res = await listOpen()
+                  if (res.code === 200) {
+                    data = res.rows.map((item) => ({
+                      label: item.period,
+                      value: item.period,
+                    }))
+                  }
+                  return data
+                }}
                 rules={[
                   {
                     required: true,
-                    message: '请选择期间！',
+                    message: '请选择会计期间！',
                   },
                 ]}
               />

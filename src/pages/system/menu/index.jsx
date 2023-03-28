@@ -213,7 +213,7 @@ function MenuTableList() {
               onOk: async () => {
                 const success = await handleRemoveOne(record)
                 if (success) {
-                  actionRef.current?.reload()()
+                  actionRef.current?.reload()
                 }
               },
             })
@@ -278,7 +278,7 @@ function MenuTableList() {
               const success = await handleRemove(selectedRowsState)
               if (success) {
                 setSelectedRows([])
-                actionRef.current?.reload()()
+                actionRef.current?.reload()
               }
             }}
           >
@@ -302,7 +302,7 @@ function MenuTableList() {
           if (success) {
             setModalVisible(false)
             setCurrentRow(undefined)
-            actionRef.current?.reload()()
+            actionRef.current?.reload()
           }
         }}
         onCancel={() => {

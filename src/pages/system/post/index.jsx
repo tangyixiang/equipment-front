@@ -176,7 +176,7 @@ function Post() {
               onOk: async () => {
                 const success = await handleRemoveOne(record)
                 if (success) {
-                  actionRef.current?.reload()()
+                  actionRef.current?.reload()
                 }
               },
             })
@@ -229,7 +229,7 @@ function Post() {
               const success = await handleRemove(selectedRowsState)
               if (success) {
                 setSelectedRows([])
-                actionRef.current?.reload()()
+                actionRef.current?.reload()
               }
             }}
           >
