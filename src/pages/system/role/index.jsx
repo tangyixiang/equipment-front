@@ -5,6 +5,7 @@ import { getDicts } from '@/api/system/dict/data'
 import { addRole, updateRole, delRole, listRole } from '@/api/system/role'
 import { getRoleMenuList, treeselect } from '@/api/system/menu'
 import ProTable from '@ant-design/pro-table'
+import { pagination } from '@/constants'
 
 function formatTreeSelectData(arrayList) {
   const treeSelectData = arrayList.map((item) => {
@@ -148,7 +149,7 @@ function RoleTableList() {
       valueType: 'text',
     },
     {
-      title: '角色权限字符串',
+      title: '权限字符串',
       dataIndex: 'roleKey',
       valueType: 'text',
     },
@@ -257,9 +258,7 @@ function RoleTableList() {
           })
         }
         pagination={{
-          defaultPageSize: 10,
-          showQuickJumper: true,
-          showSizeChanger: true,
+          ...pagination,
           showTotal: (total) => `总共 ${total} 条`,
         }}
         toolBarRender={() => [

@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useEffect, useState } from 'react'
+import React, { useLayoutEffect, useEffect, useState, useContext } from 'react'
 import BaseLayout from './components/Layout/BaseLayout'
 import { Routes, Route } from 'react-router-dom'
 import Login from './pages/login'
@@ -7,20 +7,18 @@ import RequireAuth from './components/Auth/RequireAuth'
 import useGlobalStore from './store'
 import useMenus from './hooks/useMenus'
 import { getRouters } from '@/api/menu'
-import BlankPage from './components/BlankPage'
 import Joblog from './pages/monitor/joblog'
 import Home from './pages/home'
 import Welcome from './pages/home/Welcome'
-
-// const notFound = <Route path="*" element={<NoFoundPage />} />
 
 function App() {
   const [router, setRouter] = useState('')
   const [init, setInit] = useState(false)
   const [menus, setMenus] = useState([])
-  const [buildMenus, buildRouters] = useMenus()
+
   const { userStore } = useGlobalStore()
   let user = userStore.userInfo
+  const [buildMenus, buildRouters, tabItem, activeKey] = useMenus()
 
   useLayoutEffect(() => {
     if (user) {

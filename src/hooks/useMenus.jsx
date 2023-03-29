@@ -1,11 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useNavigate, Route } from 'react-router-dom'
 import { createIcon } from '@/utils/IconUtils'
 import RequireAuth from '@/components/Auth/RequireAuth'
 import { nanoid } from 'nanoid'
+import { useImmer } from 'use-immer'
 
 const lazyLoad = (path) => {
-  const Module = React.lazy(() => import(`@/pages/${path}`))
+  const Module = React.lazy(() => import(`@/pages${path}`))
   return <Module />
 }
 
@@ -27,12 +28,12 @@ const useMenus = () => {
         component: item.component,
         authority: item.perms,
         parent: isDir,
-        onClick: () => showPage(item.path, item.query, isDir),
+        onClick: () => showPage(item.path, item.query, item.meta.title, isDir),
       }
     })
   }
 
-  const showPage = (path, query, isDir) => {
+  const showPage = (path, query, tabLabel, isDir) => {
     if (isDir === 'false') {
       if (query) {
         navigate(path.split(':')[0] + query)
@@ -67,11 +68,6 @@ const useMenus = () => {
           }
         })
       }
-      // else if (route.component) {
-      //   RouteList.push(
-      //     <Route path={route.path} element={route.component} key={route.path} />
-      //   )
-      // }
     })
     return RouteList
   }

@@ -8,17 +8,19 @@ import ResetPwd from '@/pages/system/user/components/ResetPwd'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
+const name = process.env.REACT_APP_SYS_NAME
+
 function AHeader() {
   const { userStore } = useGlobalStore()
   const [showResetPwd, setShowResetPwd] = useState(false)
   let navigate = useNavigate()
 
   const handleMenuClick = (e) => {
-    if (e.key == 'changePassword') {
+    if (e.key === 'changePassword') {
       setShowResetPwd(true)
     }
 
-    if (e.key == 'logout') {
+    if (e.key === 'logout') {
       logout()
       clearSessionToken()
       message.success('退出成功', 1, () => {
@@ -50,9 +52,7 @@ function AHeader() {
           {/* <img className="w-[42px]" alt="logo" src="./logo.svg" /> */}
           <div className="flex">
             <img className="w-[42px]" alt="logo" src="./logo.svg" />
-            <div className="text-white text-base flex items-center">
-              广西特检院桂林分院数字化平台
-            </div>
+            <div className="text-white text-base flex items-center">{name}</div>
           </div>
           <Dropdown overlay={menu}>
             <Space className="text-slate-100">
