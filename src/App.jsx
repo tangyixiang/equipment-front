@@ -14,23 +14,10 @@ import Welcome from './pages/home/Welcome'
 function App() {
   const [router, setRouter] = useState('')
   const [init, setInit] = useState(false)
-  const [menus, setMenus] = useState([])
-
   const { userStore } = useGlobalStore()
   let user = userStore.userInfo
-  const [buildMenus, buildRouters, tabItem, activeKey] = useMenus()
 
-  useLayoutEffect(() => {
-    if (user) {
-      getRouters().then((res) => {
-        const menuList = buildMenus(res.data, 'true')
-        const routeList = buildRouters(menuList)
-        setRouter(routeList)
-        setMenus(menuList)
-        setInit(true)
-      })
-    }
-  }, [user])
+  useLayoutEffect(() => {}, [])
 
   return (
     <>
@@ -40,7 +27,7 @@ function App() {
           path="/"
           element={
             <RequireAuth>
-              <BaseLayout menus={menus} />
+              <BaseLayout initRouer={setRouter} />
             </RequireAuth>
           }
         >
@@ -50,7 +37,7 @@ function App() {
           {router}
           <Route path="*" element={<NoFoundPage />} />
         </Route>
-        {init && <Route path="*" element={<NoFoundPage />} />}
+        {/* {init && <Route path="*" element={<NoFoundPage />} />} */}
       </Routes>
     </>
   )

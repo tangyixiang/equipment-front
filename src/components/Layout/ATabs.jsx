@@ -4,6 +4,7 @@ import './index.scss'
 import history from '@/utils/history'
 
 function ATabs(props) {
+  
   const handleClick = (path) => {
     history.push(path)
   }
@@ -13,13 +14,13 @@ function ATabs(props) {
   return (
     <div className="tabs">
       <Tabs
-        // activeKey={tabs.active}
+        activeKey={props.active}
         size="small"
-        items={[]}
+        items={props.tabs}
         type="editable-card"
         hideAdd
         onChange={handleClick}
-        onEdit={onEdit}
+        onEdit={props.del}
       />
     </div>
   )
