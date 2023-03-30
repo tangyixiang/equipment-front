@@ -22,38 +22,32 @@ export function listBanFlowUnReconciled(query) {
   })
 }
 
-export function uploadValidate(account, startDate, endDate, file) {
+export function uploadValidate(account, startDate, endDate, period, file) {
   let params = new FormData()
   params.append('file', file)
-  let path =
-    '/bank/flow/uploadValidate?' +
-    'account=' +
-    account +
-    '&startDate=' +
-    startDate +
-    '&endDate=' +
-    endDate
-  return request.post(path, params, {
+  params.append('account', account)
+  params.append('startDate', startDate)
+  params.append('endDate', endDate)
+  params.append('period', period)
+
+  return request.post('/bank/flow/uploadValidate', params, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
   })
 }
 
-export function uploadFlow(account, startDate, endDate, fileList) {
+export function uploadFlow(account, startDate, endDate, period, fileList) {
   let params = new FormData()
   fileList.forEach((file) => {
     params.append('file', file)
   })
-  let path =
-    '/bank/flow/upload?' +
-    'account=' +
-    account +
-    '&startDate=' +
-    startDate +
-    '&endDate=' +
-    endDate
-  return request.post(path, params, {
+
+  params.append('account', account)
+  params.append('startDate', startDate)
+  params.append('endDate', endDate)
+  params.append('period', period)
+  return request.post('/bank/flow/upload', params, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },

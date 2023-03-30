@@ -37,12 +37,12 @@ const UploadForm = (props) => {
   }
 
   const handleFinish = async (values) => {
-    const { account, startDate, endDate } = values
+    const { account, startDate, endDate, period } = values
     if (fileList.length == 0) {
       message.error('请选择需要上传的文件')
       return false
     }
-    uploadFlow(account, startDate, endDate, fileList).then((res) => {
+    uploadFlow(account, startDate, endDate, period, fileList).then((res) => {
       message.success('导入成功')
       handleCancel()
     })
@@ -80,7 +80,8 @@ const UploadForm = (props) => {
       const account = form.getFieldValue('account')
       const startDate = formateDate(form.getFieldValue('startDate'))
       const endDate = formateDate(form.getFieldValue('endDate'))
-      uploadValidate(account, startDate, endDate, file).then((res) => {
+      const period = formateDate(form.getFieldValue('period'))
+      uploadValidate(account, startDate, endDate, period, file).then((res) => {
         if (res.data.validate) {
           return resolve()
         } else {
