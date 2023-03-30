@@ -10,23 +10,21 @@ import useInitMenus from '@/hooks/useInitMenus'
 import useInitRouter from '@/hooks/useInitRouter'
 
 const BaseLayout = (props) => {
-  const { userStore } = useGlobalStore()
-  let user = userStore.userInfo
-  const [activeKey, setActiveKey] = useState('/')
-  const [tabItems, setTabItems] = useState([{ key: '/', label: '首页' }])
-  const [menus, initMenu] = useInitMenus(tabItems)
+  const {
+    userStore: { userInfo },
+  } = useGlobalStore()
+
+  const [menus, initMenu] = useInitMenus()
   const [initRouer] = useInitRouter()
 
-  console.log(tabItems)
-
   useLayoutEffect(() => {
-    if (user) {
+    if (userInfo) {
       getRouters().then((res) => {
-        const menuTree = initMenu(res.data, setActiveKey, setTabItems)
+        const menuTree = initMenu(res.data)
         initRouer(menuTree, props.initRouer)
       })
     }
-  }, [user])
+  }, [userInfo])
 
   const removeTab = (key, action) => {
     console.log(`${key}  ${action}`)
@@ -38,7 +36,7 @@ const BaseLayout = (props) => {
       <Layout>
         <ASider menus={menus} />
         <Layout>
-          <ATabs tabs={tabItems} active={activeKey} del={removeTab} />
+          <ATabs />
           <Layout.Content className="p-6 min-h-280">
             <Outlet />
           </Layout.Content>

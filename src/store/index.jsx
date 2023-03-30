@@ -1,11 +1,14 @@
 import React from 'react'
 import UserInfoStore from './UserStore'
+import TabStore from './TabStore'
 
 class RootStore {
   userStore
+  tabs
   constructor() {
     // 对引入进行来的子模块进行实例化操作，并挂载到RootStore上
     this.userStore = new UserInfoStore()
+    this.tabs = new TabStore()
   }
 }
 
