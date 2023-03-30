@@ -12,10 +12,9 @@ function useInitMenus() {
       key: item.path.match(':') ? item.path + nanoid() : item.path,
       path: item.path,
       label: item.meta.title,
+      query: item.query,
       icon: createIcon(item.meta.icon),
-      children: item.children
-        ? initMenu(item.children)
-        : undefined,
+      children: item.children ? initMenu(item.children) : undefined,
       // hideChildrenInMenu: item.hidden,
       hide: item.hidden + '',
       component: item.component,

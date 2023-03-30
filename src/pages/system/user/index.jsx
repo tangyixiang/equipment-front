@@ -140,7 +140,7 @@ function UserTableList() {
       title: '帐号状态',
       dataIndex: 'status',
       valueType: 'select',
-      enum: statusOptions,
+      valueEnum: statusOptions,
     },
     {
       title: '操作',

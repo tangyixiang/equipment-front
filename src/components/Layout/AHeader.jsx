@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom'
 const name = process.env.REACT_APP_SYS_NAME
 
 function AHeader() {
-  const { userStore } = useGlobalStore()
+  const { userStore, tabStore } = useGlobalStore()
   const [showResetPwd, setShowResetPwd] = useState(false)
   let navigate = useNavigate()
 
@@ -22,6 +22,7 @@ function AHeader() {
 
     if (e.key === 'logout') {
       logout()
+      tabStore.clearTabList()
       clearSessionToken()
       message.success('退出成功', 1, () => {
         navigate('/login')

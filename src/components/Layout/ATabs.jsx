@@ -6,8 +6,8 @@ import './index.scss'
 
 function ATabs(props) {
   const {
-    tabs,
-    tabs: { tabList },
+    tabStore,
+    tabStore: { tabList, routerList },
   } = useGlobalStore()
   const { pathname } = useLocation()
   const navigate = useNavigate()
@@ -24,8 +24,11 @@ function ATabs(props) {
   const addTabs = () => {
     const exist = tabList.some((e) => e.key === pathname)
     if (!exist) {
-      const newTabs = tabList.concat({ key: pathname, label: pathname })
-      tabs.setTabList(newTabs)
+      const data = routerList.filter((e) => e.key === pathname)
+      if (data.length) {
+        const newTabs = tabList.concat({ key: pathname, label: data[0].label })
+        tabStore.setTabList(newTabs)
+      }
     }
     setActive(pathname)
   }
@@ -37,12 +40,11 @@ function ATabs(props) {
         if (item.key !== pathname) return
         const nextTab = tabList[index + 1] || tabList[index - 1]
         if (!nextTab) return
-        navigate(nextTab.path)
+        navigate(nextTab.key)
       })
     }
-    tabs.setTabList(tabList.filter((item) => item.path !== tabPath))
+    tabStore.setTabList(tabList.filter((item) => item.key !== tabPath))
   }
-
   return (
     <div className="tabs">
       <Tabs
@@ -58,4 +60,5 @@ function ATabs(props) {
   )
 }
 
+// export default observer(ATabs)
 export default ATabs

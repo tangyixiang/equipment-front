@@ -11,6 +11,7 @@ import useInitRouter from '@/hooks/useInitRouter'
 
 const BaseLayout = (props) => {
   const {
+    tabStore,
     userStore: { userInfo },
   } = useGlobalStore()
 
@@ -22,13 +23,10 @@ const BaseLayout = (props) => {
       getRouters().then((res) => {
         const menuTree = initMenu(res.data)
         initRouer(menuTree, props.initRouer)
+        tabStore.setRouterList(menuTree)
       })
     }
   }, [userInfo])
-
-  const removeTab = (key, action) => {
-    console.log(`${key}  ${action}`)
-  }
 
   return (
     <Layout className="min-h-screen">

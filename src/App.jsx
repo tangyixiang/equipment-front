@@ -4,20 +4,12 @@ import { Routes, Route } from 'react-router-dom'
 import Login from './pages/login'
 import NoFoundPage from './pages/404'
 import RequireAuth from './components/Auth/RequireAuth'
-import useGlobalStore from './store'
-import useMenus from './hooks/useMenus'
-import { getRouters } from '@/api/menu'
 import Joblog from './pages/monitor/joblog'
 import Home from './pages/home'
 import Welcome from './pages/home/Welcome'
 
 function App() {
   const [router, setRouter] = useState('')
-  const [init, setInit] = useState(false)
-  const { userStore } = useGlobalStore()
-  let user = userStore.userInfo
-
-  useLayoutEffect(() => {}, [])
 
   return (
     <>

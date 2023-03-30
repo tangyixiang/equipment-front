@@ -4,11 +4,11 @@ import TabStore from './TabStore'
 
 class RootStore {
   userStore
-  tabs
+  tabStore
   constructor() {
     // 对引入进行来的子模块进行实例化操作，并挂载到RootStore上
     this.userStore = new UserInfoStore()
-    this.tabs = new TabStore()
+    this.tabStore = new TabStore()
   }
 }
 
