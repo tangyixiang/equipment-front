@@ -4,6 +4,7 @@ import TableList from '@/components/Table/TableList'
 import UploadForm from './components/upload'
 import { listBankFlow } from '@/api/finance/bankflow'
 import { download } from '@/utils/request'
+import { allPeriod } from '@/api/config/period'
 
 function BankFlowTableList() {
   const [uploadModal, setUploadModal] = useState(false)
@@ -22,6 +23,19 @@ function BankFlowTableList() {
       valueType: 'text',
       hideInSearch: true,
       width: 200,
+    },
+    {
+      title: '会计期间',
+      dataIndex: 'period',
+      valueType: 'select',
+      width: 100,
+      request: async () => {
+        const res = await allPeriod()
+        return res.data.map((item) => ({
+          label: item.period,
+          value: item.period,
+        }))
+      },
     },
     {
       title: '本方账号',

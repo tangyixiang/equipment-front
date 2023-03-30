@@ -15,6 +15,13 @@ export function listOpen(query) {
     params: query,
   })
 }
+export function allPeriod(query) {
+  return request({
+    url: '/period/all',
+    method: 'get',
+    params: query,
+  })
+}
 
 export function addPeriod(data) {
   return request({
