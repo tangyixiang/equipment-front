@@ -60,8 +60,8 @@ function ReceivablesTableList() {
       title: '单据类别',
       valueType: 'select',
       valueEnum: {
-        1: '财政发票',
-        2: '经营发票',
+        1: '经营发票',
+        2: '财政发票',
         3: '初始化财政发票',
         4: '初始化经营发票',
       },
