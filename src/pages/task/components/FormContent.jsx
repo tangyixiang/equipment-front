@@ -42,7 +42,7 @@ function FromContent(props) {
       <Row>
         <Col span={24}>
           <ProFormSelect
-            name="period"
+            name="params"
             label={'会计期间'}
             labelCol={{ span: 4 }}
             request={async () => {
