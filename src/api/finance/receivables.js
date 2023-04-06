@@ -6,6 +6,8 @@ export function listReceivable(query) {
   if (query.period) {
     query.period = query.period.replace('-', '')
   }
+  query.direction = '1'
+  query.valid = true
   return request({
     url: '/company/receivable/list',
     method: 'post',
