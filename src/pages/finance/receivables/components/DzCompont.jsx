@@ -42,6 +42,11 @@ function DzCompont(props) {
       valueType: 'text',
     },
     {
+      title: '会计期',
+      dataIndex: 'period',
+      valueType: 'text',
+    },
+    {
       title: '凭证号',
       dataIndex: 'bankSiteCode',
       valueType: 'text',

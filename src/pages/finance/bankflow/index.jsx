@@ -72,6 +72,18 @@ function BankFlowTableList() {
       hideInSearch: true,
     },
     {
+      title: '对账金额',
+      dataIndex: 'confirmPrice',
+      valueType: 'text',
+      hideInSearch: true,
+    },
+    {
+      title: '未对账金额',
+      dataIndex: 'unConfirmPrice',
+      valueType: 'text',
+      hideInSearch: true,
+    },
+    {
       title: '对方行号',
       dataIndex: 'adversaryBankCode',
       valueType: 'text',
