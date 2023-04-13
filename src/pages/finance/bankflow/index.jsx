@@ -148,6 +148,12 @@ function BankFlowTableList() {
         return record.associationId
       },
     },
+    {
+      dataIndex: 'updateTime',
+      title: '最后对账时间',
+      valueType: 'text',
+      hideInSearch: true,
+    },
   ]
 
   const crud = {

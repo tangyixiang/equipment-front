@@ -136,6 +136,12 @@ function ReceivablesTableList() {
       },
     },
     {
+      dataIndex: 'updateTime',
+      title: '最后对账时间',
+      valueType: 'text',
+      hideInSearch: true,
+    },
+    {
       title: '操作',
       width: '110px',
       hideInSearch: true,
