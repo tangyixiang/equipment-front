@@ -16,8 +16,8 @@ import ProTable from '@ant-design/pro-table'
 
 const transalteSourceType = (name) => {
   const data = {
-    1: '财政发票',
-    2: '经营发票',
+    1: '经营发票',
+    2: '财政发票',
     3: '初始化财政发票',
     4: '初始化经营发票',
   }
