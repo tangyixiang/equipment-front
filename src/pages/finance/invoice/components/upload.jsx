@@ -128,7 +128,7 @@ const UploadForm = (props) => {
           <Row className="mt-4">
             <Col span={20} offset={1}>
               <Typography.Text type="danger">
-                同期间已导入系统数据将被覆盖，请谨慎导入!
+                {props.warn}
               </Typography.Text>
             </Col>
           </Row>

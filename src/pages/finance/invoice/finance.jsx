@@ -220,6 +220,7 @@ const FinanceTableList = () => {
         onCancel={setUploadModal}
         path={'/invoice/finance/upload'}
         actionRef={actionRef}
+        warn={'同期间已导入数据将被覆盖，请谨慎导入。覆盖维度：会计期+票号'}
       />
     </>
   )
